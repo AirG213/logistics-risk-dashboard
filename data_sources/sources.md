@@ -1,67 +1,56 @@
 # 📦 Data Sources for Supply Chain Disruption & Resilience Analysis
 
-Ce dossier regroupe uniquement des sources gratuites et accessibles sans paiement.
+Ce dossier regroupe des sources gratuites et accessibles.
 
 ---
 
 ## 📊 Données Supply Chain & Disruptions (Gratuites et Téléchargeables)
 
-### 1. [Kaggle – Supply Chain Dataset (CSV)](https://www.kaggle.com/datasets/amirmotefaker/supply-chain-dataset)
+### 1. [Port of Los Angeles – Shipping & Container Data](https://www.kaggle.com/datasets/mikoajfish99/port-of-los-angeles)
+- **Transport** : Maritime
 - **Format** : CSV
-- **Accès** : Libre avec un compte Kaggle (gratuit)
-- **Description** : Dataset général sur la chaîne logistique : fournisseurs, clients, expéditions, délais. Bon point de départ pour explorer, repérer retards/anomalies et faire une analyse descriptive ou des visualisations.
-- **Pourquoi le garder ?** : Facile d’accès, très utilisé en recherche et data science, exploitable directement avec Python/pandas.
+- **Description** : Trafic portuaire du port de Los Angeles (arrivées, expéditions, etc.).
+- **Pourquoi l'utiliser ?** : Données exploitables pour évaluer les congestions, les retards logistiques et les volumes traités dans l’un des ports majeurs aux USA.
 
 ---
 
-### 2. [Kaggle – Supply Chain Management Dataset](https://www.kaggle.com/datasets/lastman0800/supply-chain-management)
+### 2. [Railroad Accident and Incident Data](https://www.kaggle.com/datasets/chrico03/railroad-accident-and-incident-data)
+- **Transport** : Ferroviaire
 - **Format** : CSV
-- **Accès** : Libre avec un compte Kaggle (gratuit)
-- **Description** : Données sur la gestion de la chaîne logistique, gestion fournisseurs, performances, délais. Permet d’étudier la résilience et les perturbations par analyse des tendances.
-- **Pourquoi le garder ?** : Complémentaire au dataset précédent, idéal pour KPI, tendances et analyses croisées.
+- **Description** : Détails d’incidents ferroviaires aux USA : causes, lieux, conséquences.
+- **Pourquoi l'utiliser ?** : Permet d’étudier la typologie des perturbations techniques et humaines dans le réseau ferré.
 
 ---
 
-### 3. [PreventionWeb – Global Risk Data Sets (UNDRR)](https://www.preventionweb.net/understanding-disaster-risk/disaster-losses-and-statistics/global-risk-data-sets)
-- **Format** : CSV, divers formats téléchargeables
-- **Accès** : Libre, pas de compte requis
-- **Description** : Base officielle des risques globaux, catastrophes naturelles, pertes économiques, etc. Utilisable pour relier des disruptions logistiques à des risques externes (séismes, inondations, etc).
-- **Pourquoi le garder ?** : Source de vérité internationale, grande variété de risques, open data.
-
----
-
-### 4. [PortWatch – Données portuaires IMF](https://portwatch.imf.org/datasets)
-- **Format** : CSV, accessible sans compte pour les datasets principaux
-- **Description** : Datasets mondiaux sur le trafic portuaire, imports/exports, escales. Utile pour analyser les perturbations ou retards maritimes à grande échelle.
-- **Pourquoi le garder ?** : Gratuit, focus portuaire/logistique, actualisé quotidiennement.
-
----
-
-### 5. [Data.gov – Supply Chain & Transport CSV Datasets](https://catalog.data.gov/dataset/?res_format=CSV)
+### 3. [Amazon Delivery Dataset](https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset)
+- **Transport** : Routier / Dernier kilomètre
 - **Format** : CSV
-- **Accès** : Libre, open data
-- **Description** : Des milliers de datasets sur le transport, supply chain, retards, statistiques logistiques, principalement US mais souvent pertinents pour des analyses types ou exploratoires.
-- **Pourquoi le garder ?** : Gratuit, massif, bon pour étoffer l’analyse ou trouver des cas d’usage spécifiques.
+- **Description** : Données d’Amazon sur la livraison de colis (statuts, retards, zones).
+- **Pourquoi l'utiliser ?** : Utile pour illustrer des cas de retards, de congestion ou d’optimisation dans la distribution locale.
 
 ---
 
-### . [SupplyGraph Benchmark Dataset (arXiv/Harvard Dataverse)](https://arxiv.org/html/2401.15299v3)
-- **Format** : CSV (voir le lien arXiv, qui redirige vers la data sur Harvard Dataverse)
-- **Accès** : Libre, recherche académique
-- **Description** : Données réelles sur le fonctionnement d’une chaîne logistique modélisée en graphe, avec événements et perturbations.
-- **Pourquoi le garder ?** : Pour modélisation avancée ou si besoin d’exemple réel pour GNN ou robustesse de réseau.
-
+### 4. [US International Air Traffic Data](https://www.kaggle.com/datasets/parulpandey/us-international-air-traffic-data)
+- **Transport** : Aérien
+- **Format** : CSV
+- **Description** : Données de trafic aérien international aux États-Unis (vols entrants/sortants).
+- **Pourquoi l'utiliser ?** : Données massives, intéressantes pour détecter les impacts de crises géopolitiques, pandémies ou perturbations globales.
 
 ---
 
-## 📚 Pour aller plus loin : ressources et rapports de contexte
+### 5. [Supply Chain Dataset – Natasha](https://www.kaggle.com/datasets/natasha0786/supply-chain-dataset/data)
+- **Transport** : Général (fournisseurs, produits, ventes)
+- **Format** : CSV
+- **Description** : Ensemble de données avec fournisseurs, dates de commandes, unités vendues, transporteurs.
+- **Pourquoi l'utiliser ?** : Offre des champs utiles pour observer les délais, volumes et ruptures potentielles.
 
-- [OECD Supply Chain Resilience Review (rapport, open)](https://www.oecd.org/en/publications/oecd-supply-chain-resilience-review_94e3a8ea-en.html)
-- [Business Continuity Institute (BCI) Supply Chain Resilience Report 2023 (PDF)](https://www.thebci.org/static/e02a3e5f-82e5-4ff1-b8bc61de9657e9c8/BCI-0007h-Supply-Chain-Resilience-ReportLow-Singles.pdf)
-- [University of Tennessee – Research Guide Supply Chain Data](https://libguides.utk.edu/c.php?g=911741&p=6575936)
+---
 
-Ces documents ne sont pas des datasets mais servent à la revue de littérature, inspiration pour les KPI ou pour des comparaisons internationales.
-Pour trouver d’autres datasets sur la supply chain et la logistique, voir cette compilation de liens : https://github.com/austinlasseter/datasets-shipping-logistics
+### 6. [Time Series in Risk Assessment – Saurabh Shahane](https://www.kaggle.com/datasets/saurabhshahane/time-series-in-risk-assessment/data)
+- **Domaine** : Risques (multisectoriels)
+- **Format** : CSV
+- **Description** : Données temporelles pour la modélisation de la gestion des risques (type, criticité, impact).
+- **Pourquoi l'utiliser ?** : Peut être utilisé pour construire des courbes de tendances et des modèles de scoring de risque.
 
 ---
 
