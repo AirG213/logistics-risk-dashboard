@@ -70,4 +70,3 @@ Pour enrichir l’analyse de l’impact des conditions météorologiques sur les
 
 ---
 **À mettre à jour à chaque ajout/test.**  
-N’oublie pas de décrire brièvement chaque dataset téléchargé dans ce README (structure, nombre de lignes, variables principales, etc).
