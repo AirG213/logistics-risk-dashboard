@@ -193,5 +193,7 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-/data/*
 !/data/README.md
+!/data/raw/README.md
+!/data/extracted/README.md
+!/data/cleaned/README.md
