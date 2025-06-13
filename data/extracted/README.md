@@ -6,22 +6,6 @@ Ce dossier contient **les jeux de données extraits** (CSV ou XLSX) depuis les Z
 - Aucun fichier ne doit être modifié ici : c’est la version *extrait* du ZIP, rien d’autre.
 - Toujours garder le nom d’origine du CSV (ou le documenter dans ce README).
 
-## Structure
-/extracted/
-├── Amazon_Delivery_Dataset/
-│ └── amazon_delivery.csv
-├── Global_Daily_Port_Activity_and_Trade_Estimates/
-│ └── Daily_Port_Activity_Data_and_Trade_Estimates.csv
-├── Railroad_Accident_Incident_Data/
-│ └── Rail_Equipment_Accident_Incident_Data.csv
-├── Supply_chain_dataset/
-│ └── dynamic_supply_chain_logistics_dataset_with_country.csv
-├── Time_Series_in_Risk_Assessment/
-│ ├── SCRM_timeSeries_2018_train.csv
-│ └── SCRM_timeSeries_2018_test.csv
-├── USA_Airline_Delay_Cause/
-│ └── Airline_Delay_Cause.cs
-
 ## Suivi d’extraction
 | Dataset                                | Fichier extrait                                      | Dossier                                    |
 |----------------------------------------|------------------------------------------------------|--------------------------------------------|
