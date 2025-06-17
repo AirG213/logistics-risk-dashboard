@@ -6,11 +6,11 @@ Ce dossier regroupe des sources gratuites et accessibles.
 
 ## 📊 Données Supply Chain & Disruptions (Gratuites et Téléchargeables)
 
-### 1. [Global Daily Port Activity and Trade Estimates](https://www.kaggle.com/datasets/arunvithyasegar/daily-port-activity-data-and-trade-estimates)
-- **Transport** : Maritime (mondial)
-- **Format** : CSV
-- **Description**: Données quotidiennes sur l’activité et les volumes de commerce de 24 ports stratégiques dans le monde.
-- **Pourquoi ce choix ?** : Permet d’identifier des pics de congestion, des anomalies ou des tendances révélant une fragilité portuaire. Son échelle journalière est idéale pour croiser les données avec des événements météo ou des crises ponctuelles, même si la cause exacte de chaque perturbation n’est pas explicitée.
+### 1. [HELCOM – Baltic Sea Shipping Accidents Database](https://maps.helcom.fi/website/mapservice/?datasetID=cae61cf8-0b3a-449a-aeaf-1df752dd3d80)
+- **Transport** : Maritime (Baltique, accidents en mer et en zone portuaire)
+- **Format** : ESRI Shapefile (fichiers .shp, .dbf, .shx, etc.)
+- **Description**: Base de données exhaustive recensant tous les accidents de navires dans la mer Baltique, incluant la localisation, le type d’accident, la cause, la catégorie du navire, la météo, les dégâts matériels, les conséquences humaines et environnementales (pollution), etc.
+- **Pourquoi ce choix ?** : Permet une analyse détaillée des risques maritimes liés aux accidents en zone portuaire : typologie, causes, conséquences et tendances sur 30 ans. Ce jeu de données est adapté à la construction d’indicateurs de criticité et de modules d’analyse de la résilience logistique maritime.
 
 ---
 
@@ -45,7 +45,6 @@ Ce dossier regroupe des sources gratuites et accessibles.
 - **Pourquoi ce choix ?** :  Idéal pour la construction d’indicateurs avancés et pour analyser la propagation du risque à l’échelle d’une chaîne logistique complète.
 
 ---
-
 ## 🔎 Plateformes généralistes de recherche de datasets
 - [Google Dataset Search](https://datasetsearch.research.google.com/)
 - [Gigasheet – Free List of Logistics and Supply Chain Businesses (CSV)](https://www.gigasheet.com/sample-data/free-list-of-logistics-and-supply-chain-businessescsv)
