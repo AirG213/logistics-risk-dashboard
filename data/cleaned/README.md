@@ -15,5 +15,4 @@ Ces fichiers sont ceux utilisés pour toutes les analyses, visualisations et mod
 | Global_Daily_Port_Activity_and_Trade_Estimates | port_activity_cleaned.csv            | [à compléter]  |
 | Railroad_Accident_Incident_Data | railroad_accident_cleaned.csv      | EDA_Railroad_Accident_Incident_Data.ipynb  |
 | Supply_chain_dataset       | supply_chain_cleaned.csv     | EDA_Supply_chain_dataset.ipynb  |
-| Time_Series_in_Risk_Assessment| risk_timeseries_train_cleaned.csv    | [à compléter]  |
 | USA_Airline_Delay_Cause    | airline_delay_cause_cleaned.csv      | EDA_Airline_Delay_Cause.ipynb  |

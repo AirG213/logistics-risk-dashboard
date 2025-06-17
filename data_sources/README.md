@@ -46,14 +46,6 @@ Ce dossier regroupe des sources gratuites et accessibles.
 
 ---
 
-### 6. [Time Series in Risk Assessment – Saurabh Shahane](https://www.kaggle.com/datasets/saurabhshahane/time-series-in-risk-assessment/data)
-- **Domaine** : Risques (multisectoriels)
-- **Format** : CSV
-- **Description** : Données temporelles pour la modélisation de la gestion des risques (type, criticité, impact).
-- **Pourquoi ce choix ?** : Permet d’étudier la stabilité et la résilience dans la durée, et de construire des courbes de tendance/scoring pour anticiper les périodes critiques.
-
----
-
 ## 🔎 Plateformes généralistes de recherche de datasets
 - [Google Dataset Search](https://datasetsearch.research.google.com/)
 - [Gigasheet – Free List of Logistics and Supply Chain Businesses (CSV)](https://www.gigasheet.com/sample-data/free-list-of-logistics-and-supply-chain-businessescsv)
