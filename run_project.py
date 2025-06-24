@@ -6,7 +6,7 @@ from pathlib import Path
 # --------------------------
 # 📂 Répertoires
 BASE_DIR = Path(__file__).resolve().parent
-VENV_DIR = BASE_DIR / "venv"
+VENV_DIR = BASE_DIR / ".venv"
 REQUIREMENTS_FILE = BASE_DIR / "requirements.txt"
 DATA_SOURCES_NOTEBOOK = BASE_DIR / "data_sources" / "data_pipeline.ipynb"
 APP_FILE = BASE_DIR / "dashboard" / "app.py"
