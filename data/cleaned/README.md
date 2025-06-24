@@ -16,3 +16,4 @@ Ces fichiers sont ceux utilisés pour toutes les analyses, visualisations et mod
 | Railroad_Accident_Incident_Data | railroad_accident_cleaned.csv      | EDA_Railroad_Accident_Incident_Data.ipynb  |
 | Supply_chain_dataset       | supply_chain_cleaned.csv     | EDA_Supply_chain_dataset.ipynb  |
 | USA_Airline_Delay_Cause    | airline_delay_cause_cleaned.csv      | EDA_Airline_Delay_Cause.ipynb  |
+| USA_Accidents   | usa_accidents_traffic_cleaned.csv      | EDA_Accident_Traffic.ipynb  |

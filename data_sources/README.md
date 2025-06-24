@@ -51,6 +51,14 @@ Ce dossier regroupe des sources gratuites et accessibles.
 - **Pourquoi ce choix ?** :  Idéal pour la construction d’indicateurs avancés et pour analyser la propagation du risque à l’échelle d’une chaîne logistique complète.
 
 ---
+
+### 6. [US Accidents (2016–2023)](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents)
+- **Transport** : Routier (USA)
+- **Format** : CSV
+- **Description** : 7,7 millions de rapports d'accidents routiers réels aux États-Unis de 2016 à 2023, incluant gravité, impact sur le trafic et coordonnées GPS.
+- **Pourquoi ce choix ?** : Fournit une base fiable pour estimer la probabilité de perturbations routières dans l'analyse de résilience logistique.
+
+---
 ## 🔎 Plateformes généralistes de recherche de datasets
 - [Google Dataset Search](https://datasetsearch.research.google.com/)
 - [Gigasheet – Free List of Logistics and Supply Chain Businesses (CSV)](https://www.gigasheet.com/sample-data/free-list-of-logistics-and-supply-chain-businessescsv)

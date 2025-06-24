@@ -6,3 +6,5 @@ jupyter
 scikit-learn
 geopandas
 meteostat
+plotly
+streamlit
