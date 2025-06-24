@@ -10,7 +10,13 @@ Ce dossier regroupe des sources gratuites et accessibles.
 - **Transport** : Maritime (Baltique, accidents en mer et en zone portuaire)
 - **Format** : ESRI Shapefile (fichiers .shp, .dbf, .shx, etc.)
 - **Description**: Base de données exhaustive recensant tous les accidents de navires dans la mer Baltique, incluant la localisation, le type d’accident, la cause, la catégorie du navire, la météo, les dégâts matériels, les conséquences humaines et environnementales (pollution), etc.
-- **Pourquoi ce choix ?** : Permet une analyse détaillée des risques maritimes liés aux accidents en zone portuaire : typologie, causes, conséquences et tendances sur 30 ans. Ce jeu de données est adapté à la construction d’indicateurs de criticité et de modules d’analyse de la résilience logistique maritime.
+- **Pourquoi ce choix ?** : Permet une analyse détaillée des risques maritimes liés aux accidents en zone portuaire et en mer : typologie, causes... Ce jeu de données est adapté à la construction d’indicateurs de criticité et de modules d’analyse de la résilience logistique maritime.
+
+#### 1.1. [World Port Index – Port Data](https://fgmod.nga.mil/apps/WPI-Viewer/)
+- Afin de compléter les données maritimes (localisations des accidents), un dataset contenant une liste (non exhaustive) des ports du monde a été utilisé.
+
+### 1.2. [Natural Earth](https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_land.zip)
+- Pour enrichir les données géographiques, le jeu de données Natural Earth a été utilisé. Il fournit des informations sur la position des côtes.
 
 ---
 
@@ -60,4 +66,4 @@ Pour enrichir l’analyse de l’impact des conditions météorologiques sur les
 - **Mise en œuvre** : Appels API via Python.
 
 ---
-**À mettre à jour à chaque ajout/test.**  
+**À mettre à jour à chaque ajout/test.**
