@@ -8,3 +8,5 @@ geopandas
 meteostat
 plotly
 streamlit
+kaggle
+papermill
