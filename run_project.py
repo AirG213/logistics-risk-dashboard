@@ -2,10 +2,9 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-import papermill as pm
 
 # --------------------------
-# 📂 Répertoires
+# Répertoires
 BASE_DIR = Path(__file__).resolve().parent
 VENV_DIR = BASE_DIR / ".venv"
 REQUIREMENTS_FILE = BASE_DIR / "requirements.txt"
@@ -17,28 +16,35 @@ total = 4
 
 # --------------------------
 # [1/4] Créer venv
-print(f"[{step}/{total}] 📦 Création du venv...")
+print(f"[{step}/{total}] Création du venv...")
 if not VENV_DIR.exists():
     subprocess.run([sys.executable, "-m", "venv", str(VENV_DIR)], check=True)
-    print(f"✅ venv créé : {VENV_DIR}")
+    print(f"venv créé : {VENV_DIR}")
 else:
-    print(f"✅ venv déjà présent : {VENV_DIR}")
+    print(f"venv déjà présent : {VENV_DIR}")
 
-# ✅ Définir python_exe et pip_exe **juste après création**
+# Définir python_exe et pip_exe **juste après création**
 python_exe = VENV_DIR / "Scripts" / "python.exe" if os.name == "nt" else VENV_DIR / "bin" / "python"
 pip_exe = VENV_DIR / "Scripts" / "pip.exe" if os.name == "nt" else VENV_DIR / "bin" / "pip"
 
 # --------------------------
 # [2/4] Installer requirements
 step += 1
-print(f"[{step}/{total}] 📦 Installation des requirements...")
+print(f"[{step}/{total}] Installation des requirements...")
 subprocess.run([str(pip_exe), "install", "-r", str(REQUIREMENTS_FILE)], check=True)
-print("✅ Packages installés.")
+print("Packages installés.")
 
 # --------------------------
 # [3/4] Orchestration DATA SOURCES
+try:
+    import papermill as pm
+except ImportError:
+    import subprocess, sys
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "papermill"])
+    import papermill as pm
+
 step += 1
-print(f"[{step}/{total}] 🚀 Orchestration des DATA SOURCES : {DATA_SOURCES_NOTEBOOK}")
+print(f"[{step}/{total}] Orchestration des DATA SOURCES : {DATA_SOURCES_NOTEBOOK}")
 
 original_cwd = os.getcwd()
 
@@ -49,10 +55,10 @@ try:
         output_path=None
     )
 
-    print("✅ Données récupérées, extraites et nettoyées.")
+    print("Données récupérées, extraites et nettoyées.")
 
 except Exception as e:
-    print(f"❌ Erreur pendant l'orchestration DATA SOURCES : {e}")
+    print(f"Erreur pendant l'orchestration DATA SOURCES : {e}")
     raise
 
 finally:
@@ -61,7 +67,7 @@ finally:
 # --------------------------
 # [4/4] Lancer Streamlit 
 step += 1
-print(f"[{step}/{total}] 🚀 Lancement de Streamlit : {APP_FILE}")
+print(f"[{step}/{total}] Lancement de Streamlit : {APP_FILE}")
 
 streamlit_exe = VENV_DIR / "Scripts" / "streamlit.exe" if os.name == "nt" else VENV_DIR / "bin" / "streamlit"
 
@@ -74,4 +80,4 @@ subprocess.run(
     check=True
 )
 
-print(f"\n✅✨ Tout le pipeline a été exécuté avec succès !")
+print(f"\nTout le pipeline a été exécuté avec succès !")
