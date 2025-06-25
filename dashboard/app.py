@@ -1,6 +1,6 @@
 import streamlit as st
 import base64
-from modules import traffic, airline, railroad, supply_chain
+from modules import traffic, airline, railroad, shipping, supply_chain
 
 st.set_page_config(
     page_title="Analyse des Risques - Résilience Chaîne Logistique",
@@ -51,6 +51,7 @@ pages = {
     "🚗 Transport Routier": "traffic_accident",
     "✈️ Transport Aérien": "airline",
     "🚆 Transport Ferroviaire": "railroad",
+    "🚢 Transport Maritime": "shipping",
     "📦 Chaîne Logistique": "supply_chain"
 }
 
@@ -67,7 +68,7 @@ else:
 if st.session_state["page"] == "home":
     st.title("Analyse de Risque - Résilience Chaîne Logistique")
     st.write("""
-    Ce tableau de bord interactif aide à anticiper et visualiser les perturbations potentielles 
+    Ce tableau de bord interactif aide à anticiper et visualiser les perturbations potentielles
     pour la continuité de la chaîne logistique.
     """)
 
@@ -79,6 +80,9 @@ elif st.session_state["page"] == "airline":
 
 elif st.session_state["page"] == "railroad":
     railroad.show()
+
+elif st.session_state["page"] == "shipping":
+    shipping.show()
 
 elif st.session_state["page"] == "supply_chain":
     supply_chain.show()
