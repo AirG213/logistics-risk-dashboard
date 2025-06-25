@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+import papermill as pm
 
 # --------------------------
 # 📂 Répertoires
@@ -39,26 +40,23 @@ print("✅ Packages installés.")
 step += 1
 print(f"[{step}/{total}] 🚀 Orchestration des DATA SOURCES : {DATA_SOURCES_NOTEBOOK}")
 
-process = subprocess.Popen(
-    [
-        str(python_exe), "-m", "papermill",
-        str(DATA_SOURCES_NOTEBOOK),
-        str(DATA_SOURCES_NOTEBOOK)
-    ],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT,
-    universal_newlines=True
-)
+original_cwd = os.getcwd()
 
-for line in process.stdout:
-    print(line, end="")
+try:
+    os.chdir(DATA_SOURCES_NOTEBOOK.parent)
+    pm.execute_notebook(
+        input_path=DATA_SOURCES_NOTEBOOK.name,
+        output_path=None
+    )
 
-process.wait()
+    print("✅ Données récupérées, extraites et nettoyées.")
 
-if process.returncode != 0:
-    raise subprocess.CalledProcessError(process.returncode, process.args)
+except Exception as e:
+    print(f"❌ Erreur pendant l'orchestration DATA SOURCES : {e}")
+    raise
 
-print("✅ Données récupérées, extraites et nettoyées.")
+finally:
+    os.chdir(original_cwd)
 
 # --------------------------
 # [4/4] Lancer Streamlit 
