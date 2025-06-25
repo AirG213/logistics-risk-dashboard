@@ -52,7 +52,7 @@ pages = {
     "✈️ Transport Aérien": "airline",
     "🚆 Transport Ferroviaire": "railroad",
     "🚢 Transport Maritime": "shipping",
-    "📦 Chaîne Logistique": "supply_chain"
+    "📦 Analyse des Fournisseurs": "supply_chain"
 }
 
 selection = st.sidebar.radio("-", list(pages.keys()))

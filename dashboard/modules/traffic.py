@@ -71,7 +71,7 @@ def show():
     df['Start_Time'] = pd.to_datetime(df['Start_Time']) # dates sont au format datetime
 
     # Aperçu du CSV
-    with st.expander("Voir un aperçu du fichier final nettoyé et enrichi (1000 lignes)"):
+    with st.expander("Voir un aperçu du dataset (1000 lignes)"):
         st.dataframe(df.head(1000))
 
     # Préparer les agrégats
