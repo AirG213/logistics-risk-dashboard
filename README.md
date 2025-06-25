@@ -44,7 +44,7 @@ Ce script va automatiquement :
 - [3/4] Télécharger les datasets (via Kaggle CLI + token intégré dans le code)
 - [4/4] Lancer le dashboard interactif avec Streamlit
 
-> ⚠️ Si un fichier ou dataset manque ou échoue au téléchargement, c’est probablement que le **token privé** a expiré.  
+> ⚠️ Si un fichier ou dataset manque ou échoue au téléchargement, lancer manuellemnt /data_sources/data_pipeline.ipynb, sinon si le **token privé** a expiré.  
 > Merci de contacter un membre du projet pour obtenir un nouveau token (1 dataset sur 6 est privé).
 
 ---
