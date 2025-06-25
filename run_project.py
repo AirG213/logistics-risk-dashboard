@@ -45,11 +45,17 @@ subprocess.run([
 print("Kernel Jupyter 'logistics-env' enregistré.")
 
 # --------------------------
-# [2/5] Installer requirements
+# [2/5] Installer les dépendances
 step += 1
-print(f"[{step}/{total}] Installation des requirements...")
-subprocess.run([str(pip_exe), "install", "-r", str(REQUIREMENTS_FILE)], check=True)
-print("Packages installés.")
+print(f"[{step}/{total}] Installation des dépendances depuis requirements.txt...")
+
+# Ajoute automatiquement le dossier Scripts à PATH 
+os.environ["PATH"] = str(VENV_DIR / "Scripts") + os.pathsep + os.environ["PATH"]
+
+# Installe les requirements dans le venv
+subprocess.run([str(pip_exe), "install", "-r", str(BASE_DIR / "requirements.txt")], check=True)
+
+print("Dépendances installées.")
 
 # --------------------------
 # [3/5] Orchestration DATA SOURCES
@@ -67,6 +73,7 @@ try:
     pm.execute_notebook(
         input_path=str(DATA_SOURCES_NOTEBOOK),
         output_path=str(DATA_SOURCES_NOTEBOOK),
+        kernel_name="logistics-env",
         cwd=str(DATA_SOURCES_NOTEBOOK.parent)
     )
     print("Données récupérées, extraites et nettoyées.")
