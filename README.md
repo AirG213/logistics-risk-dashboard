@@ -49,6 +49,15 @@ Ce script va automatiquement :
 
 ---
 
+## ⏳ Temps de traitement
+
+**⛔ Important : Le temps d'exécution du pipeline dépend fortement de :**
+- La **vitesse de votre connexion Internet** (téléchargement des datasets depuis Kaggle)
+- La **puissance de votre machine** pour exécuter les notebooks d’analyse (certains EDA prennent plusieurs minutes)
+
+👉 **Soyez patient lors du premier lancement**, une fois les fichiers générés, les relances suivantes seront bien plus rapides.
+
+---
 ## 🗂️ Structure du projet
 
 ```
