@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 import base64
-from utils import apply_responsive
+from utils import load_csv, apply_responsive
 
 def get_base64(file):
     with open(file, "rb") as f:
@@ -10,15 +10,6 @@ def get_base64(file):
     return base64.b64encode(data).decode()
 
 icon_base64 = get_base64("assets/traffic_accident_icon.png")
-
-@st.cache_data
-def load_clean_data():
-    df = pd.read_csv("../data/cleaned/usa_accidents_traffic_cleaned.csv")
-    df['Start_Time'] = pd.to_datetime(df['Start_Time'])
-    df['HourOfDay'] = df['Start_Time'].dt.hour
-    df['DayOfWeek'] = df['Start_Time'].dt.dayofweek
-    df['Month'] = df['Start_Time'].dt.month
-    return df
 
 @st.cache_data
 def prepare_data(df):
@@ -57,9 +48,6 @@ def show():
         unsafe_allow_html=True
     )
 
-    # Charger les données
-    df = load_clean_data()
-
     st.markdown("""
     ### Contexte et Source des Données
 
@@ -78,9 +66,13 @@ def show():
     Ces critères pondérés donnent un `Risk_Score` de 0 (nul) à 1 (élevé).
     """)
 
+    # Charger les données
+    df = load_csv("../data/cleaned/usa_accidents_traffic_cleaned.csv")
+    df['Start_Time'] = pd.to_datetime(df['Start_Time']) # dates sont au format datetime
+
     # Aperçu du CSV
-    with st.expander("Voir un aperçu du fichier final nettoyé et enrichi (100000 lignes)"):
-        st.dataframe(df.head(100000))
+    with st.expander("Voir un aperçu du fichier final nettoyé et enrichi (1000 lignes)"):
+        st.dataframe(df.head(1000))
 
     # Préparer les agrégats
     hour_counts, day_counts, month_counts, hour_scores, day_scores, month_scores, risk_summary, heatmap = prepare_data(df)
