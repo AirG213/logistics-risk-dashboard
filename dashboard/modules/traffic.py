@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 import base64
+from utils import apply_responsive
 
 def get_base64(file):
     with open(file, "rb") as f:
@@ -43,15 +44,6 @@ def prepare_data(df):
     heatmap = heatmap_data.groupby(['Main_Weather', 'HourOfDay'])['Risk_Score'].mean().reset_index()
 
     return hour_counts, day_counts, month_counts, hour_scores, day_scores, month_scores, risk_summary, heatmap
-
-def apply_responsive(fig):
-    fig.update_layout(
-        autosize=True,
-        width=None,
-        height=500,
-        margin=dict(l=20, r=20, t=40, b=20)
-    )
-    return fig
 
 def show():
     # Titre + Icône alignés
