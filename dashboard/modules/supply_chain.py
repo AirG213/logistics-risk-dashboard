@@ -143,7 +143,7 @@ def show_tab2(df):
         st.dataframe(risk_summary, use_container_width=True, hide_index=True)
 
 def show_tab3(df):
-    st.markdown("### Matrice de Corrélation — Variables Clés")
+    st.markdown("### Matrice de Corrélation")
 
     # Colonnes pertinentes à corréler
     corr_cols = [
@@ -176,7 +176,6 @@ def show_tab3(df):
     )
 
     fig.update_layout(
-        title="Corrélation entre les Variables",
         xaxis_title="Variables",
         yaxis_title="Variables",
         margin=dict(l=40, r=40, t=50, b=40)
