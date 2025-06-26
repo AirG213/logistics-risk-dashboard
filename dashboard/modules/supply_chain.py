@@ -1,10 +1,7 @@
 import streamlit as st
-import pandas as pd
 import base64
 from utils import load_csv, apply_responsive
 import plotly.express as px
-import seaborn as sns
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 def show_tab1(df):
