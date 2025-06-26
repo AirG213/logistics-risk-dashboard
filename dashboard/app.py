@@ -1,6 +1,6 @@
 import streamlit as st
 import base64
-from modules import traffic, airline, railroad, shipping, supply_chain
+from modules import traffic, airline, railroad, shipping, supply_chain, amazon_delivery
 
 st.set_page_config(
     page_title="Analyse des Risques - Résilience Chaîne Logistique",
@@ -52,7 +52,8 @@ pages = {
     "✈️ Transport Aérien": "airline",
     "🚆 Transport Ferroviaire": "railroad",
     "🚢 Transport Maritime": "shipping",
-    "📦 Fournisseurs": "supply_chain"
+    "📦 Fournisseurs": "supply_chain",
+    "📬 Livraison Amazon": "amazon_delivery"
 }
 
 selection = st.sidebar.radio("-", list(pages.keys()))
@@ -86,3 +87,6 @@ elif st.session_state["page"] == "shipping":
 
 elif st.session_state["page"] == "supply_chain":
     supply_chain.show()
+
+elif st.session_state["page"] == "amazon_delivery":
+    amazon_delivery.show()

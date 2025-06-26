@@ -90,7 +90,7 @@ def show():
     col4.metric("Total Accidents", f"{total:,}")
 
     # TABS pour structurer la page
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Plage Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
 
     with tab1:
         st.subheader("Répartition des Catégories de Risque")
