@@ -10,3 +10,4 @@ plotly
 streamlit
 kaggle
 papermill
+streamlit-option-menu

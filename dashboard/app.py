@@ -1,11 +1,12 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import base64
 from modules import traffic, airline, railroad, shipping, supply_chain, amazon_delivery
 
 st.set_page_config(
-    page_title="Analyse des Risques - Résilience Chaîne Logistique",
-    page_icon="assets/logo.png",
-    layout="wide"
+    page_title='Analyse des Risques - Résilience Chaîne Logistique',
+    page_icon='assets/logo.png',
+    layout='wide'
 )
 
 # ----------------------------------------
@@ -17,27 +18,28 @@ def get_base64_of_bin_file(bin_file):
     return base64.b64encode(data).decode()
 
 # ----------------------------------------
-# LOGO CLIQUABLE EN BASE64
+# PAGE D'ACCUEIL
 # ----------------------------------------
-logo_base64 = get_base64_of_bin_file("assets/logo.png")
-
-st.sidebar.markdown(
-    f"""
-    <div style="text-align: center;">
-        <a href="?page=home">
-            <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto; display: block; margin: auto;">
-        </a>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+def show_home():
+    st.title('Analyse de Risque - Résilience Chaîne Logistique')
+    st.write("""
+    Ce tableau de bord interactif aide à anticiper et visualiser les perturbations potentielles
+    pour la continuité de la chaîne logistique.
+    """)
 
 # ----------------------------------------
 # SIDEBAR - NAVIGATION
 # ----------------------------------------
+logo_base64 = get_base64_of_bin_file('assets/logo.png')
+
 st.sidebar.markdown(
     f"""
-    <div style="text-align: center; margin-top: 10px;">
+    <div>
+        <a href="?page=home">
+            <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto; display: block; margin: auto;">
+        </a>
+    </div>
+    <div style="text-align: center; margin-bottom: 20px;">
         <a href="?page=home" style="text-decoration: none; font-size: 22px; font-weight: bold; color: inherit;">
             Analyse de Risque Logistiques
         </a>
@@ -46,47 +48,21 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-pages = {
-    "🏠 Dashboard": "home",
-    "🚗 Transport Routier": "traffic_accident",
-    "✈️ Transport Aérien": "airline",
-    "🚆 Transport Ferroviaire": "railroad",
-    "🚢 Transport Maritime": "shipping",
-    "📦 Fournisseurs": "supply_chain",
-    "📬 Livraison Amazon": "amazon_delivery"
+PAGES = {
+    '🏠 Dashboard': show_home,
+    '🚗 Transport Routier': traffic.show,
+    '✈️ Transport Aérien': airline.show,
+    '🚆 Transport Ferroviaire': '',
+    '🚢 Transport Maritime': shipping.show,
+    '📦 Fournisseurs': supply_chain.show,
+    '📬 Livraison Amazon': amazon_delivery.show
 }
 
-selection = st.sidebar.radio("-", list(pages.keys()))
+with st.sidebar:
+    selected_label = option_menu(
+        None,
+        ['🏠 Dashboard', '---'] + list(PAGES.keys())[1:],
+        default_index=0
+    )
 
-if "page" not in st.session_state:
-    st.session_state["page"] = pages[selection]
-else:
-    st.session_state["page"] = pages[selection]
-
-# ----------------------------------------
-# ROUTAGE
-# ----------------------------------------
-if st.session_state["page"] == "home":
-    st.title("Analyse de Risque - Résilience Chaîne Logistique")
-    st.write("""
-    Ce tableau de bord interactif aide à anticiper et visualiser les perturbations potentielles
-    pour la continuité de la chaîne logistique.
-    """)
-
-elif st.session_state["page"] == "traffic_accident":
-    traffic.show()
-
-elif st.session_state["page"] == "airline":
-    airline.show()
-
-elif st.session_state["page"] == "railroad":
-    railroad.show()
-
-elif st.session_state["page"] == "shipping":
-    shipping.show()
-
-elif st.session_state["page"] == "supply_chain":
-    supply_chain.show()
-
-elif st.session_state["page"] == "amazon_delivery":
-    amazon_delivery.show()
+PAGES.get(selected_label, show_home)()
