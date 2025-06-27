@@ -52,7 +52,7 @@ PAGES = {
     '🏠 Dashboard': show_home,
     '🚗 Transport Routier': traffic.show,
     '✈️ Transport Aérien': airline.show,
-    '🚆 Transport Ferroviaire': '',
+    '🚆 Transport Ferroviaire' : railroad.show,
     '🚢 Transport Maritime': shipping.show,
     '📦 Fournisseurs': supply_chain.show,
     '📬 Livraison Amazon': amazon_delivery.show
