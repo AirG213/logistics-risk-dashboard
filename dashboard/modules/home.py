@@ -5,10 +5,10 @@ from utils import load_csv, apply_responsive, get_base64
 
 def show(df_traffic, df_airline, df_railroad, df_shipping):
     st.title('Analyse de Risque - Résilience Chaîne Logistique')
-    st.write("Ce tableau de bord interactif résume les incidents critiques par mode de transport.")
+    st.write("Ce tableau de bord interactif résume les incidents par mode de transport.")
 
     # Indicateurs Globaux
-    st.markdown("### Vue d’ensemble des incidents critiques")
+    st.markdown("### Vue d’ensemble des incidents")
 
     col_kpi1, col_kpi2, col_kpi3, col_kpi4 = st.columns(4)
 

@@ -95,6 +95,7 @@ def show_tab1(df):
     else:
         st.warning("Les colonnes de temps de retard par cause sont manquantes.")
 
+    st.markdown("---")
 
     st.subheader("Top 10 des aéroports avec le plus fort taux de retard")
 
@@ -129,6 +130,8 @@ def show_tab1(df):
 
     else:
         st.warning("Les colonnes nécessaires ('airport_name', 'arr_del15', 'arr_flights') sont manquantes.")
+
+    st.markdown("---")
 
     st.subheader("Top 10 des compagnies avec le plus fort taux de retard")
 
@@ -216,6 +219,7 @@ def show_tab2(df):
     else:
         st.warning("Certaines colonnes nécessaires sont manquantes.")
 
+    st.markdown("---")
 
     st.subheader("Évolution du taux de retard dans le temps")
 
@@ -281,8 +285,7 @@ def show():
     col1.metric('Nombre de Vols Annulé', f'{int(df['arr_cancelled'].sum()):,}')
     col2.metric('Nombre de Vols Dérouté', f'{int(df['arr_diverted'].sum()):,}')
 
-
-    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Plage Temporelle', 'Heatmap'])
+    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Heatmap'])
     with tab1:
         show_tab1(df)
 
@@ -291,3 +294,11 @@ def show():
 
     with tab3:
         show_tab3(df)
+
+    st.markdown("---")
+
+    # Résumé
+    st.info(f"""
+    **Résumé de l'Analyse :**
+    - 
+    """)

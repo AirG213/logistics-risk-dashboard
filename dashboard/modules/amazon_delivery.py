@@ -268,4 +268,4 @@ def show():
     - **Contexte météo-trafic le plus critique :** `{df.groupby(['Weather', 'Traffic'])['delivery_risk'].mean().idxmax()}`
     - **Zone géographique la plus à risque :** `{df.groupby('Area')['area_risk_score'].mean().idxmax()}`
     - **Catégorie la plus fréquemment commandée :** `{df['Category'].mode()[0]}`
-    xx""")
+    """)
