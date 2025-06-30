@@ -20,6 +20,8 @@ def show_tab1(df):
     fig_map.update_geos(showcountries=True, showcoastlines=True, fitbounds="locations")
     st.plotly_chart(apply_responsive(fig_map), use_container_width=True)
 
+    st.markdown("---")
+
     # TOP pays
     st.markdown("### Top 10 des Pays avec les Fournisseurs les Plus Fiables")
     top_countries_best = (
@@ -30,6 +32,8 @@ def show_tab1(df):
     )
     st.dataframe(top_countries_best, use_container_width=True, hide_index=True)
 
+    st.markdown("---")
+
     st.markdown("### Top 10 des Pays avec les Fournisseurs les Moins Fiables")
     top_countries_worst = (
         df.groupby('supplier_country', as_index=False)['Resilience_Index']
@@ -38,6 +42,8 @@ def show_tab1(df):
         .head(10)
     )
     st.dataframe(top_countries_worst, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
 
     # Distributions
     st.markdown("### Distribution des Scores")
@@ -66,6 +72,8 @@ def show_tab2(df):
         .sort_values(by="lead_time_days", ascending=False)
         .head(10)
     )
+    
+    st.markdown("---")
     st.markdown("Top 10 des Pays avec les Délais Moyens les Plus Longs")
     st.dataframe(top_lead_time_long, use_container_width=True, hide_index=True)
 
@@ -75,8 +83,12 @@ def show_tab2(df):
         .sort_values(by="lead_time_days", ascending=True)
         .head(10)
     )
+
+    st.markdown("---")
     st.markdown("Top 10 des Pays avec les Meilleurs Délais Moyens")
     st.dataframe(top_lead_time_short, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
 
     # --- Analyse des Retards ---
     st.markdown("### Analyse des Retards de Livraison (Delivery Time Deviation)")
@@ -90,6 +102,8 @@ def show_tab2(df):
     n_avance = (df['delivery_time_deviation'] < 0).sum()
     st.markdown(f"**Proportion de retards :** {n_retard / n_total * 100:.2f}%")
     st.markdown(f"**Proportion d'avances :** {n_avance / n_total * 100:.2f}%")
+
+    st.markdown("---")
 
     # Boxplot des retards pour les pays les plus représentés
     st.markdown("### Distribution des Retards de Livraison par Pays (Top 10)")
@@ -105,6 +119,8 @@ def show_tab2(df):
     )
     st.plotly_chart(apply_responsive(fig_box), use_container_width=True)
 
+    st.markdown("---")
+
     # --- Fournisseurs les Plus et Moins Résilients ---
     st.markdown("### Top 10 des Fournisseurs les Plus Résilients")
     top_suppliers_best = (
@@ -114,6 +130,8 @@ def show_tab2(df):
         .head(10)
     )
     st.dataframe(top_suppliers_best, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
 
     st.markdown("### Top 10 des Fournisseurs les Moins Résilients")
     top_suppliers_worst = (
@@ -242,6 +260,8 @@ def show():
 
     with tab3:
         show_tab3(df)
+
+    st.markdown("---")
 
     # Résumé
     st.info(f"""

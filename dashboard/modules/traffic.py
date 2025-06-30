@@ -113,12 +113,16 @@ def show():
         fig_hour_score = px.line(hour_scores, x='HourOfDay', y='Risk_Score', markers=True)
         st.plotly_chart(apply_responsive(fig_hour_score), use_container_width=True)
 
+        st.markdown("---")
+
         st.subheader("Analyse par Jour de la Semaine")
         fig_day_count = px.bar(day_counts, x='DayOfWeek', y='Count')
         st.plotly_chart(apply_responsive(fig_day_count), use_container_width=True)
 
         fig_day_score = px.line(day_scores, x='DayOfWeek', y='Risk_Score', markers=True)
         st.plotly_chart(apply_responsive(fig_day_score), use_container_width=True)
+
+        st.markdown("---")
 
         st.subheader("Analyse par Mois")
         fig_month_count = px.bar(month_counts, x='Month', y='Count')
@@ -138,6 +142,8 @@ def show():
             title="Heatmap Risque Moyen (Météo vs Heure)"
         )
         st.plotly_chart(apply_responsive(fig_heat), use_container_width=True)
+
+    st.markdown("---")
 
     # Résumé
     st.info(f"""

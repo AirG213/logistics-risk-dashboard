@@ -11,6 +11,8 @@ def show_tab1(df):
     apply_responsive(fig_hist)
     st.plotly_chart(fig_hist, use_container_width=True)
 
+    st.markdown("---")
+
     # Top contextes à risque (Weather x Traffic)
     st.markdown("### Contextes les Plus à Risque (Météo & Trafic)")
     top_risks = (
@@ -22,6 +24,8 @@ def show_tab1(df):
     )
     st.dataframe(top_risks, hide_index=True, use_container_width=True)
 
+    st.markdown("---")
+
     # Zones géographiques avec le plus de risques
     st.markdown("### Zones Géographiques à Risque")
     area_risks = (
@@ -30,6 +34,8 @@ def show_tab1(df):
         .sort_values(by="area_risk_score", ascending=False)
     )
     st.dataframe(area_risks, hide_index=True, use_container_width=True)
+
+    st.markdown("---")
 
     # Catégories les plus représentées 
     st.markdown("### Catégories de Produits les plus Vendues")
@@ -56,6 +62,8 @@ def show_tab2(df):
     apply_responsive(fig_orders)
     st.plotly_chart(fig_orders, use_container_width=True)
 
+    st.markdown("---")
+
     # Bloc 2 — Temps de livraison moyen par heure
     st.subheader("Temps de Livraison selon l'Heure de Commande")
     fig_box = px.box(df_time, x="Order_Hour", y="Delivery_Time",
@@ -65,6 +73,8 @@ def show_tab2(df):
     fig_box.update_layout(margin=dict(l=0, r=0, t=40, b=0))
     apply_responsive(fig_box)
     st.plotly_chart(fig_box, use_container_width=True)
+
+    st.markdown("---")
 
     # Bloc 3 — Risque de retard par heure
     st.subheader("Taux de Retard (>120min) par Heure")
@@ -77,6 +87,8 @@ def show_tab2(df):
     apply_responsive(fig_risk_hour)
     st.plotly_chart(fig_risk_hour, use_container_width=True)
 
+    st.markdown("---")
+
     # Bloc 4 — Risque de retard par jour de la semaine
     st.subheader("Taux de Retard selon le Jour de la Semaine")
     risk_by_day = df_time.groupby("DayOfWeek")["delivery_risk"].mean().reindex([
@@ -88,6 +100,8 @@ def show_tab2(df):
     fig_risk_day.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
     apply_responsive(fig_risk_day)
     st.plotly_chart(fig_risk_day, use_container_width=True)
+
+    st.markdown("---")
 
     # Bloc 5 — Comparaison matin vs soir
     st.subheader("Matin vs Soir : Comparaison du Taux de Retard")
@@ -103,6 +117,8 @@ def show_tab2(df):
     fig_risk_period.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
     apply_responsive(fig_risk_period)
     st.plotly_chart(fig_risk_period, use_container_width=True)
+
+    st.markdown("---")
 
     # Bloc 6 — Évolution temporelle globale (par date)
     st.subheader("Évolution Globale du Taux de Retard")
@@ -130,6 +146,8 @@ def show_tab3(df):
     st.plotly_chart(fig1, use_container_width=True)
     apply_responsive(fig1)
 
+    st.markdown("---")
+
     # Zone x Météo
     st.subheader("Carte des Risques — Zone x Météo")
     risk_area_weather = df.pivot_table(index="Weather", columns="Area", values="delivery_risk", aggfunc="mean")
@@ -143,6 +161,8 @@ def show_tab3(df):
     )
     st.plotly_chart(fig2, use_container_width=True)
     apply_responsive(fig2)
+
+    st.markdown("---")
 
     # Jour x Heure
     st.subheader("Carte des Risques — Jour x Heure de Commande")
@@ -233,6 +253,8 @@ def show():
 
     with tab3:
         show_tab3(df)
+
+    st.markdown("---")
 
     # Résumé
     st.info(f"""

@@ -20,6 +20,8 @@ def show_tab1(df):
     )
     st.plotly_chart(apply_responsive(fig_type), use_container_width=True)
 
+    st.markdown("---")
+
     st.markdown("### Moyennes des Variables par Type d’Accident")
     st.markdown("**Comparaison des indicateurs selon le type d’accident**")
     variables = [
@@ -48,6 +50,8 @@ def show_tab1(df):
     else:
         st.info("Veuillez sélectionner au moins une variable.")
 
+    st.markdown("---")
+
     st.subheader("Niveau de Criticité Global")
     crit_counts = df["Niveau_criticité"].value_counts().reset_index()
     crit_counts.columns = ["Niveau_criticité", "Count"]
@@ -60,6 +64,8 @@ def show_tab1(df):
         color_discrete_map={"Low": "green", "Medium": "orange", "High": "red"}
     )
     st.plotly_chart(apply_responsive(fig_crit), use_container_width=True)
+
+    st.markdown("---")
 
     st.subheader("Carte des Incidents")
     # Nettoyage des coordonnées
@@ -93,6 +99,8 @@ def show_tab1(df):
 
     st.plotly_chart(apply_responsive(fig_map), use_container_width=True)
 
+    st.markdown("---")
+
     st.subheader("Comtés les plus et les moins touchés")
     county_counts = df["County Name"].value_counts().reset_index()
     county_counts.columns = ["County", "Count"]
@@ -120,6 +128,8 @@ def show_tab2(df):
     )
     st.plotly_chart(fig_years, use_container_width=True)
 
+    st.markdown("---")
+
     # Répartition par type d'incident sur le temps
     st.subheader("Types d'Accidents au Fil du Temps")
     type_year = df.groupby(["Report Year", "Accident Type"]).size().unstack(fill_value=0)
@@ -129,6 +139,8 @@ def show_tab2(df):
         title="Évolution des types d'accidents"
     )
     st.plotly_chart(fig_type, use_container_width=True)
+
+    st.markdown("---")
 
     # Risque moyen par année
     st.subheader("Évolution du Risque Composite Moyen")
@@ -141,6 +153,8 @@ def show_tab2(df):
         title="Risque moyen par année"
     )
     st.plotly_chart(fig_risk, use_container_width=True)
+
+    st.markdown("---")
 
     # Moment de la journée
     st.subheader("Répartition par Moment de la Journée")
@@ -171,6 +185,8 @@ def show_tab3(df):
     fig1.update_layout(width=900, height=600, margin=dict(l=50, r=50, t=50, b=50))
     st.plotly_chart(fig1, use_container_width=True)
     st.caption("Les variables fortement corrélées sont les blessures, les décès et les coûts matériels. Hazmat reste faiblement lié.")
+
+    st.markdown("---")
 
     st.markdown("### Corrélation Hazmat & Risque")
     st.markdown("**Corrélation Hazmat et Risque Composite**")
@@ -266,6 +282,7 @@ def show():
     with tab3:
         show_tab3(df)
 
+    st.markdown("---")
 
     # Résumé
     st.info(f"""
