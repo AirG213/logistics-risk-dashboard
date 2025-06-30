@@ -253,7 +253,69 @@ def show_tab2(df):
         st.warning("Colonnes 'arr_del15', 'arr_flights' ou 'year' manquantes.")
 
 def show_tab3(df):
-    pass
+    st.subheader("Corrélation entre les durées de retard (en minutes)")
+
+    delay_time_cols = {
+        'carrier_delay': 'Compagnie aérienne',
+        'weather_delay': 'Météo',
+        'nas_delay': 'Contrôle aérien (NAS)',
+        'security_delay': 'Sécurité',
+        'late_aircraft_delay': 'Avion précédent'
+    }
+
+    if all(col in df.columns for col in delay_time_cols):
+        corr_df = df[list(delay_time_cols)].corr()
+        corr_df.columns = [delay_time_cols[c] for c in corr_df.columns]
+        corr_df.index = [delay_time_cols[c] for c in corr_df.index]
+
+        fig_corr1 = px.imshow(
+            corr_df.round(2),
+            text_auto=True,
+            color_continuous_scale='Blues',
+            title="Corrélation entre les temps de retard (en minutes)",
+            labels=dict(color="Corrélation"),
+            aspect="auto"
+        )
+        st.plotly_chart(fig_corr1, use_container_width=True)
+    else:
+        st.warning("Colonnes de durée de retard manquantes.")
+
+    st.markdown("---")
+    st.subheader("Corrélation entre les fréquences de retard (nombre de cas)")
+
+    delay_count_cols = {
+        'carrier_ct': 'Compagnie aérienne',
+        'weather_ct': 'Météo',
+        'nas_ct': 'Contrôle aérien (NAS)',
+        'security_ct': 'Sécurité',
+        'late_aircraft_ct': 'Avion précédent'
+    }
+
+    if all(col in df.columns for col in delay_count_cols):
+        corr_df2 = df[list(delay_count_cols)].corr()
+        corr_df2.columns = [delay_count_cols[c] for c in corr_df2.columns]
+        corr_df2.index = [delay_count_cols[c] for c in corr_df2.index]
+
+        fig_corr2 = px.imshow(
+            corr_df2.round(2),
+            text_auto=True,
+            color_continuous_scale='Oranges',
+            title="Corrélation entre les fréquences de retard (nombre de cas)",
+            labels=dict(color="Corrélation"),
+            aspect="auto"
+        )
+        st.plotly_chart(fig_corr2, use_container_width=True)
+    else:
+        st.warning("Colonnes de comptage de retard manquantes.")
+
+    with st.expander("💡 Interprétation de la corrélation entre les causes"):
+        st.markdown(f"""
+        - Une **forte corrélation positive** entre certaines causes indique qu’elles surviennent souvent ensemble.  
+        Exemple : les retards dus à **l’avion précédent** sont fortement liés aux **retards de la compagnie aérienne**, ce qui suggère des effets en chaîne internes.
+        - À l’inverse, une **faible ou nulle corrélation** entre deux causes (comme **météo** et **sécurité**) signifie qu’elles sont généralement indépendantes.
+
+        - La comparaison entre **temps de retard** et **nombre de retards** permet d’identifier les causes **fréquentes** mais peu longues, ou **rares** mais très **pénalisantes** en durée.
+        """)
 
 def show():
     st.markdown(
@@ -274,7 +336,7 @@ def show():
     df = load_csv('../data/cleaned/airline_delay_cause_cleaned.csv')
 
     # Aperçu du CSV
-    with st.expander('Voir un aperçu du fichier final nettoyé et enrichi (1000 lignes)'):
+    with st.expander('Voir un aperçu du dataset (1000 lignes)'):
         st.dataframe(df.head(1000))
 
     # KPI
