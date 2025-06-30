@@ -22,13 +22,13 @@ df_amazon = load_csv("../data/cleaned/amazon_delivery_cleaned.csv")
 # ----------------------------------------
 # SIDEBAR - NAVIGATION
 # ----------------------------------------
-get_base64 = get_base64('assets/logo.png')
+logo_base64 = get_base64('assets/logo.png')
 
 st.sidebar.markdown(
     f"""
     <div>
         <a href="?page=home">
-            <img src="data:image/png;base64,{get_base64}" style="width: 120px; height: auto; display: block; margin: auto;">
+            <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto; display: block; margin: auto;">
         </a>
     </div>
     <div style="text-align: center; margin-bottom: 20px;">

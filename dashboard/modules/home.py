@@ -5,10 +5,18 @@ from utils import load_csv, apply_responsive, get_base64
 
 def show(df_traffic, df_airline, df_railroad, df_shipping):
     st.title('Analyse de Risque - Résilience Chaîne Logistique')
-    st.write("Ce tableau de bord interactif résume les incidents par mode de transport.")
+    st.markdown("""
+    La résilience des chaînes logistiques est devenue un enjeu stratégique face à la montée des risques : catastrophes naturelles, perturbations géopolitiques, défaillances techniques ou aléas climatiques.
 
+    Ce tableau de bord interactif s’inscrit dans une démarche de recherche menée au CESI LINEACT, visant à développer un **système d’analyse des risques logistiques** basé sur les données.  
+    Il permet d’explorer les incidents critiques selon quatre modes de transport : **routier**, **aérien**, **ferroviaire** et **maritime**, à partir de jeux de données publics.
+
+    L’objectif ? Fournir aux décideurs une visualisation claire des zones de fragilité, des typologies d’incidents, et des axes d’amélioration pour anticiper les perturbations et renforcer la résilience globale.
+
+    ---
+    """)
     # Indicateurs Globaux
-    st.markdown("### Vue d’ensemble des incidents")
+    st.markdown("### Nombre Total d'Incidents par Mode de Transport")
 
     col_kpi1, col_kpi2, col_kpi3, col_kpi4 = st.columns(4)
 
@@ -113,3 +121,16 @@ def show(df_traffic, df_airline, df_railroad, df_shipping):
             color_discrete_sequence=px.colors.qualitative.Set2
         )
         st.plotly_chart(apply_responsive(fig_ship), use_container_width=True)
+
+    st.markdown("---")
+    st.info(f"""
+    ### Explorer les Modules
+    Pour une analyse approfondie, **6 modules dédiés** sont accessibles via le menu :
+    - 🚗 Transport Routier
+    - ✈️ Transport Aérien
+    - 🚆 Transport Ferroviaire
+    - 🚢 Transport Maritime
+    - 📦 Fournisseurs
+    - 📬 Livraison Amazon
+    Chaque module propose ses propres indicateurs, visualisations spécifiques, et métriques de performance afin de mieux comprendre les vulnérabilités et leviers d’optimisation.
+    """)
