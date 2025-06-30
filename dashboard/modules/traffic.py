@@ -1,13 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-import base64
-from utils import load_csv, apply_responsive
-
-def get_base64(file):
-    with open(file, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
+from utils import load_csv, apply_responsive, get_base64
 
 icon_base64 = get_base64("assets/traffic_accident_icon.png")
 
@@ -143,7 +137,7 @@ def show():
         )
         st.plotly_chart(apply_responsive(fig_heat), use_container_width=True)
 
-    st.markdown("---")
+        st.markdown("---")
 
     # Résumé
     st.info(f"""

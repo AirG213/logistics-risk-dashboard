@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import base64
 
 @st.cache_data
 def load_csv(filepath):
@@ -14,3 +15,8 @@ def apply_responsive(fig):
         margin=dict(l=20, r=20, t=40, b=20)
     )
     return fig
+
+def get_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
