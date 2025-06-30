@@ -3,16 +3,16 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 
+color_map = {
+    'Retard compagnie aérienne': '#636EFA',
+    'Retard météo': '#EF553B',
+    'Retard contrôle aérien (NAS)': '#00CC96',
+    'Retard sécurité': '#AB63FA',
+    'Retard avion précédent': '#FFA15A'
+}
+
 def show_tab1(df):
     st.subheader("Répartition des retards par catégorie")
-
-    color_map = {
-        'Retard compagnie aérienne': '#636EFA',
-        'Retard météo': '#EF553B',
-        'Retard contrôle aérien (NAS)': '#00CC96',
-        'Retard sécurité': '#AB63FA',
-        'Retard avion précédent': '#FFA15A'
-    }
 
     delay_cols = [
         'carrier_ct',
@@ -199,14 +199,16 @@ def show_tab2(df):
 
         animated_df = pd.DataFrame(result_frames)
         animated_df['Texte'] = animated_df['Temps moyen (min)'].apply(lambda x: f"{x:.2f}")
+        animated_df_sorted = animated_df.sort_values(by='Temps moyen (min)', ascending=False)
 
         fig = px.bar(
-            animated_df,
+            animated_df_sorted,
             y='Cause',
             x='Temps moyen (min)',
             animation_frame='year',
             orientation='h',
             color='Cause',
+            color_discrete_map=color_map,
             text='Texte',
             template='plotly_white',
             range_x=[0,30]
@@ -300,5 +302,10 @@ def show():
     # Résumé
     st.info(f"""
     **Résumé de l'Analyse :**
-    - 
+    - **19,08% des vols** ont enregistré un retard.
+    - **30,35% des retards** sont dus à **l'arrivée tardive d'un vol précédent** utilisant le même avion.
+    - Les autres causes principales de retard sont liées à **la compagnie aérienne elle-même** et au **Système National de l'Aviation (NAS)**.
+    - Les **aéroports les plus impactés** affichent des taux de retard compris entre **30% et 40%**.
+    - Les **compagnies aériennes les moins ponctuelles** présentent des taux de retard allant de **20% à 25%**.
+    - Le **taux de retard global** reste **relativement stable autour de 20%** au fil des années.
     """)
