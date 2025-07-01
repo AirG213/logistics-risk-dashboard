@@ -1,0 +1,13 @@
+pandas
+numpy
+matplotlib
+seaborn
+jupyter
+scikit-learn
+geopandas
+meteostat
+plotly
+streamlit
+kaggle
+papermill
+streamlit-option-menu
