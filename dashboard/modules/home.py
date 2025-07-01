@@ -106,7 +106,7 @@ def show(df_traffic, df_airline, df_railroad, df_shipping):
     with col4:
         st.markdown("### Transport Maritime")
         top_ship = (
-            df_shipping[df_shipping["Acc_Type"] != "Other"]
+            df_shipping[df_shipping["Acc_Type"] != "Autre"]
             .value_counts(subset=["Acc_Type"])
             .reset_index(name="Nombre")
             .head(3)
@@ -125,6 +125,7 @@ def show(df_traffic, df_airline, df_railroad, df_shipping):
     st.markdown("---")
     st.info(f"""
     ### Explorer les Modules
+    Chaque module propose ses propres indicateurs, visualisations spécifiques, et métriques de performance afin de mieux comprendre les vulnérabilités et leviers d’optimisation.
     Pour une analyse approfondie, **6 modules dédiés** sont accessibles via le menu :
     - 🚗 Transport Routier
     - ✈️ Transport Aérien
@@ -132,5 +133,4 @@ def show(df_traffic, df_airline, df_railroad, df_shipping):
     - 🚢 Transport Maritime
     - 📦 Fournisseurs
     - 📬 Livraison Amazon
-    Chaque module propose ses propres indicateurs, visualisations spécifiques, et métriques de performance afin de mieux comprendre les vulnérabilités et leviers d’optimisation.
     """)
