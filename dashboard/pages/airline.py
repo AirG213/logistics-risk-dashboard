@@ -2,6 +2,9 @@ from utils import load_csv, apply_responsive
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+from sidebar import show_sidebar
+
+show_sidebar()
 
 color_map = {
     'Retard compagnie aérienne': '#636EFA',
@@ -310,7 +313,7 @@ def show_tab3(df):
 
     with st.expander("💡 Interprétation de la corrélation entre les causes"):
         st.markdown(f"""
-        - Une **forte corrélation positive** entre certaines causes indique qu’elles surviennent souvent ensemble.  
+        - Une **forte corrélation positive** entre certaines causes indique qu’elles surviennent souvent ensemble.
         Exemple : les retards dus à **l’avion précédent** sont fortement liés aux **retards de la compagnie aérienne**, ce qui suggère des effets en chaîne internes.
         - À l’inverse, une **faible ou nulle corrélation** entre deux causes (comme **météo** et **sécurité**) signifie qu’elles sont généralement indépendantes.
 
@@ -340,14 +343,14 @@ def show():
         st.dataframe(df.head(1000))
 
     # KPI
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     col1.metric('Nombre de Vols', f'{int(df['arr_flights'].sum()):,}')
     col2.metric('Nombre de Retards', f'{int(df['arr_del15'].sum()):,}')
     col3.metric('Temps total de Retard (minutes)', f'{int(df['arr_delay'].sum()):,}')
-    col4.metric('Plage Temporelle', f'{df['year'].min().astype(int)} - {df['year'].max().astype(int)}')
 
     col1.metric('Nombre de Vols Annulé', f'{int(df['arr_cancelled'].sum()):,}')
     col2.metric('Nombre de Vols Dérouté', f'{int(df['arr_diverted'].sum()):,}')
+    col3.metric('Plage Temporelle', f'{df['year'].min().astype(int)} - {df['year'].max().astype(int)}')
 
     tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Heatmap'])
     with tab1:
@@ -371,3 +374,5 @@ def show():
     - Les **compagnies aériennes les moins ponctuelles** présentent des taux de retard allant de **20% à 25%**.
     - Le **taux de retard global** reste **relativement stable autour de 20%** au fil des années.
     """)
+
+show()

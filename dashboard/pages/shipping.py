@@ -4,6 +4,9 @@ from utils import load_csv, apply_responsive
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+from sidebar import show_sidebar
+
+show_sidebar()
 
 def show_tab1(df):
     st.markdown("## Répartition des Accidents et du Risque")
@@ -12,7 +15,7 @@ def show_tab1(df):
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Par Type d’Accident")
+        st.subheader("Par Type d'Accident")
         type_counts = df["Acc_Type"].value_counts().reset_index()
         type_counts.columns = ["Type d'accident", "Nombre"]
         fig_type = px.bar(
@@ -87,7 +90,7 @@ def show_tab1(df):
 
     with st.expander("💡 Interprétation des Scores de Risque"):
         st.markdown(f"""
-        Le **Score de Risque** est un indicateur composite calculé à partir d’une pondération des dommages matériels, de la pollution et du profil du navire.
+        Le **Score de Risque** est un indicateur composite calculé à partir d'une pondération des dommages matériels, de la pollution et du profil du navire.
 
         **Seuils de classification utilisés (dynamiquement par quantiles) :**
         - **Low** : 0 ≤ score ≤ `{q[1]:.3f}`
@@ -107,7 +110,7 @@ def show_tab2(df):
 
     # Carte des incidents animée par année
     st.subheader("Cartographie Animée des Accidents Maritimes")
-    fig_map = px.scatter_mapbox(
+    fig_map = px.scatter_map(
         df,
         lat="Latitude",
         lon="Longitude",
@@ -241,29 +244,29 @@ def show():
     st.markdown("""
     ### Contexte et Sources des Données
 
-    Ce module repose sur une analyse approfondie des **accidents maritimes survenus en mer Baltique** entre 2003 et 2023. Il s’appuie sur plusieurs jeux de données géospatiaux fiables permettant une **cartographie précise** et une **classification des risques logistiques maritimes**.
+    Ce module repose sur une analyse approfondie des **accidents maritimes survenus en mer Baltique** entre 2003 et 2023. Il s'appuie sur plusieurs jeux de données géospatiaux fiables permettant une **cartographie précise** et une **classification des risques logistiques maritimes**.
 
     #### Données utilisées :
-    - **[HELCOM – Baltic Sea Shipping Accidents Database](https://maps.helcom.fi/website/mapservice/?datasetID=cae61cf8-0b3a-449a-aeaf-1df752dd3d80)**  
+    - **[HELCOM - Baltic Sea Shipping Accidents Database](https://maps.helcom.fi/website/mapservice/?datasetID=cae61cf8-0b3a-449a-aeaf-1df752dd3d80)**
       > Base officielle recensant chaque accident en mer ou en zone portuaire : localisation, type, cause, navire impliqué, pollution, dommages, etc.
 
-    - **[World Port Index](https://fgmod.nga.mil/apps/WPI-Viewer/)**  
+    - **[World Port Index](https://fgmod.nga.mil/apps/WPI-Viewer/)**
       > Référentiel mondial des ports (coordonnées, infrastructures, capacité).
 
-    - **[Natural Earth](https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-land/)**  
+    - **[Natural Earth](https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-land/)**
       > Cartographie des côtes pour identifier les zones proches du littoral.
 
     #### Méthodologie :
-    - **Regroupement des accidents en 5 catégories :**  
+    - **Regroupement des accidents en 5 catégories :**
       `Technical or Equipment Failure`, `Navigation or Maneuvering Incident`, `Fire or Explosion`, `Life-saving Equipment Incident`, `Other`
 
-    - **Classification géographique des lieux d’accident :**  
-      `Port`, `Port approach`, `Sea`, `Open sea`  
+    - **Classification géographique des lieux d'accident :**
+      `Port`, `Port approach`, `Sea`, `Open sea`
       → basée sur des calculs de distance entre les accidents, les côtes et les ports.
 
-    - **Calcul du Score de Risque :**  
+    - **Calcul du Score de Risque :**
       Chaque incident est évalué à travers un score composite calculé comme une moyenne pondérée de trois dimensions : la sévérité des dommages, le niveau de pollution, et le profil de vulnérabilité du navire. Ce score, compris entre 0 et 1, est défini par la formule suivante :
-      `Risk_Score = 0.5 × Damage_Severe + 0.3 × Pollution_Score + 0.2 × Ship_Profile_Score`   
+      `Risk_Score = 0.5 × Damage_Severe + 0.3 × Pollution_Score + 0.2 × Ship_Profile_Score`
     """)
 
     # Charger les données nettoyées
@@ -320,6 +323,8 @@ def show():
     - Zone la plus touchée : **{most_common_zone}** ({df['Location'].value_counts(normalize=True).max()*100:.1f}% des incidents).
     - Score de risque moyen : **{df['Risk_Score'].mean():.3f}** (min: {df['Risk_Score'].min():.3f}, max: {df['Risk_Score'].max():.3f}).
     - Pollution totale estimée : **{pollution_display}**.
-    - Plage d’analyse : **{year_min} → {year_max}**, couvrant {distinct_years} années.
+    - Plage d'analyse : **{year_min} → {year_max}**, couvrant {distinct_years} années.
     - Incidents critiques (classe "Critical") : **{(df['Risk_Class'] == 'Critical').mean()*100:.1f}%** du total.
     """)
+
+show()

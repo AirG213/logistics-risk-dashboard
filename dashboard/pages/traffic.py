@@ -2,6 +2,9 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 from utils import load_csv, apply_responsive, get_base64
+from sidebar import show_sidebar
+
+show_sidebar()
 
 icon_base64 = get_base64("assets/traffic_accident_icon.png")
 
@@ -45,7 +48,7 @@ def show():
     st.markdown("""
     ### Contexte et Source des Données
 
-    Ce module est basé sur le dataset **[US Accidents (2016–2023)](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents)** :
+    Ce module est basé sur le dataset **[US Accidents (2016-2023)](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents)** :
     - **Domaine :** Transport routier (USA)
     - **Format :** CSV
     - **Description :** 7,7 millions de rapports d'accidents réels aux États-Unis, de 2016 à 2023, incluant gravité, durée, impact sur le trafic et coordonnées GPS.
@@ -147,3 +150,5 @@ def show():
     - Perturbations météo : {weather_pct:.1f}% des cas (pluie, neige, brouillard).
     - Total incidents analysés : {total:,}.
     """)
+
+show()

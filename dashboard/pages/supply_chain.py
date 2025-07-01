@@ -3,6 +3,9 @@ import base64
 from utils import load_csv, apply_responsive
 import plotly.express as px
 import plotly.graph_objects as go
+from sidebar import show_sidebar
+
+show_sidebar()
 
 def show_tab1(df):
     st.markdown("### Carte des Fournisseurs les Plus Fiables")
@@ -62,7 +65,7 @@ def show_tab1(df):
 def show_tab2(df):
     # --- Analyse des Délais ---
     st.markdown("### Analyse des Délais de Livraison")
-    
+
     fig_lead_hist = px.histogram(df, x="lead_time_days", nbins=50, color_discrete_sequence=["#1f77b4"])
     st.plotly_chart(apply_responsive(fig_lead_hist), use_container_width=True)
 
@@ -72,7 +75,7 @@ def show_tab2(df):
         .sort_values(by="lead_time_days", ascending=False)
         .head(10)
     )
-    
+
     st.markdown("---")
     st.markdown("Top 10 des Pays avec les Délais Moyens les Plus Longs")
     st.dataframe(top_lead_time_long, use_container_width=True, hide_index=True)
@@ -217,20 +220,20 @@ def show():
     st.markdown("""
     ### Contexte et Source des Données
 
-    Ce module repose sur le dataset **[Supply Chain Dataset – Natasha (Kaggle)](https://www.kaggle.com/datasets/natasha0786/supply-chain-dataset/data)** :
-    - **Domaine :** Logistique et chaîne d’approvisionnement  
-    - **Format :** CSV (113 000 lignes)  
+    Ce module repose sur le dataset **[Supply Chain Dataset - Natasha (Kaggle)](https://www.kaggle.com/datasets/natasha0786/supply-chain-dataset/data)** :
+    - **Domaine :** Logistique et chaîne d'approvisionnement
+    - **Format :** CSV (113 000 lignes)
     - **Description :** Vue complète des opérations de la chaîne logistique, enrichie par des indicateurs opérationnels (stocks, coûts, équipements, fiabilité fournisseurs) et contextuels (risques, perturbations, retards, délais de douane).
-    - **Pourquoi ce choix ?** : Permet d’identifier les vulnérabilités logistiques, d’évaluer la résilience des fournisseurs, et de construire des indicateurs fiables pour l’analyse de risques.
+    - **Pourquoi ce choix ?** : Permet d'identifier les vulnérabilités logistiques, d'évaluer la résilience des fournisseurs, et de construire des indicateurs fiables pour l'analyse de risques.
 
     **Le `Risk_Score` est une moyenne pondérée de :**
-    - `route_risk_level` (normalisé /10)  
-    - `disruption_likelihood_score`  
-    - `delay_probability`  
+    - `route_risk_level` (normalisé /10)
+    - `disruption_likelihood_score`
+    - `delay_probability`
     - `delivery_time_deviation` (normalisé /10)
 
-    **L’indice de résilience (`Resilience_Index`)** est défini comme suit :  
-    > `supplier_reliability_score × (1 - Risk_Score)`
+    **L'indice de résilience (`Resilience_Index`)** est défini comme suit :
+    > `supplier_reliability_score x (1 - Risk_Score)`
     """)
 
     # Charger les données nettoyées
@@ -268,8 +271,10 @@ def show():
     **Résumé :**
     - Fournisseurs analysés : {df['supplier_id'].nunique():,} répartis sur {df['supplier_country'].nunique()} pays.
     - Produits couverts : {df['product_id'].nunique():,}
-    - Risk Score moyen : {df['Risk_Score'].mean():.3f}  
+    - Risk Score moyen : {df['Risk_Score'].mean():.3f}
     - Résilience moyenne : {df['Resilience_Index'].mean():.3f}
     - Délais > 5 jours : {(df['lead_time_days'] > 5).mean() * 100:.2f}% des cas
     - Retards (delivery_time_deviation > 0) : {(df['delivery_time_deviation'] > 0).mean() * 100:.2f}% des livraisons
     """)
+
+show()

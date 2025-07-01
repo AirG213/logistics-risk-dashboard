@@ -3,6 +3,9 @@ import pandas as pd
 import base64
 from utils import load_csv, apply_responsive
 import plotly.express as px
+from sidebar import show_sidebar
+
+show_sidebar()
 
 def show_tab1(df):
     # Histogramme des temps de livraison
@@ -37,7 +40,7 @@ def show_tab1(df):
 
     st.markdown("---")
 
-    # Catégories les plus représentées 
+    # Catégories les plus représentées
     st.markdown("### Catégories de Produits les plus Vendues")
     top_categories = (
         df['Category'].value_counts()
@@ -201,30 +204,30 @@ def show():
     st.markdown("""
     ### Contexte et Source des Données
 
-    Ce module repose sur le dataset **[Amazon Delivery Dataset – Sujal Suthar (Kaggle)](https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset)** :
-    - **Domaine :** Transport routier / Logistique du dernier kilomètre  
-    - **Format :** CSV (~43 000 lignes)  
-    - **Description :** Données issues de livraisons Amazon en environnement urbain et métropolitain, incluant météo, circulation, zone géographique, performance de livraison, et type de véhicule.  
-    - **Pourquoi ce choix ?** : Permet d’illustrer l’impact des conditions météo et du trafic sur les retards, d’identifier les situations critiques, et d’évaluer la résilience opérationnelle sur le dernier kilomètre.
+    Ce module repose sur le dataset **[Amazon Delivery Dataset - Sujal Suthar (Kaggle)](https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset)** :
+    - **Domaine :** Transport routier / Logistique du dernier kilomètre
+    - **Format :** CSV (~43 000 lignes)
+    - **Description :** Données issues de livraisons Amazon en environnement urbain et métropolitain, incluant météo, circulation, zone géographique, performance de livraison, et type de véhicule.
+    - **Pourquoi ce choix ?** : Permet d'illustrer l'impact des conditions météo et du trafic sur les retards, d'identifier les situations critiques, et d'évaluer la résilience opérationnelle sur le dernier kilomètre.
 
-    > ℹ️ **Attention :** La provenance exacte du dataset n’est pas garantie. Il est probable qu’il s’agisse de données simulées ou anonymisées à des fins pédagogiques. Les analyses restent néanmoins pertinentes pour étudier les facteurs logistiques impactant la performance de livraison.
+    > ℹ️ **Attention :** La provenance exacte du dataset n'est pas garantie. Il est probable qu'il s'agisse de données simulées ou anonymisées à des fins pédagogiques. Les analyses restent néanmoins pertinentes pour étudier les facteurs logistiques impactant la performance de livraison.
 
     ---
 
     ### Variables Clés
 
-    - **`delivery_risk`**  
-    > Définit comme `1` si `Delivery_Time > 120 min`, sinon `0`.  
-    > Permet d’isoler les livraisons considérées comme en **retard important**.
+    - **`delivery_risk`**
+    > Définit comme `1` si `Delivery_Time > 120 min`, sinon `0`.
+    > Permet d'isoler les livraisons considérées comme en **retard important**.
 
-    - **`weather_traffic_risk_score`**  
-    > Calculé à partir du **taux moyen de retards** (>120 min) **observé pour chaque combinaison `Weather` × `Traffic`** (via une pivot table).  
+    - **`weather_traffic_risk_score`**
+    > Calculé à partir du **taux moyen de retards** (>120 min) **observé pour chaque combinaison `Weather` x `Traffic`** (via une pivot table).
     > Exemple : `Cloudy + Jam` ≈ 89 % de livraisons en retard → score = 0.89.
 
-    - **`area_risk_score`**  
-    > Moyenne des `delivery_risk` par type de zone (`Area`) : `Urban`, `Metropolitian`, etc.  
+    - **`area_risk_score`**
+    > Moyenne des `delivery_risk` par type de zone (`Area`) : `Urban`, `Metropolitian`, etc.
     > Exemple : si 37 % des livraisons en zone urbaine sont en retard, score = 0.37.
-    Toutes ces variables sont ajoutées dynamiquement dans le jeu de données nettoyé **`amazon_delivery_cleaned.csv`** afin d’être exploitées dans le tableau de bord.
+    Toutes ces variables sont ajoutées dynamiquement dans le jeu de données nettoyé **`amazon_delivery_cleaned.csv`** afin d'être exploitées dans le tableau de bord.
     """)
 
     # Charger les données nettoyées
@@ -269,3 +272,5 @@ def show():
     - **Zone géographique la plus à risque :** `{df.groupby('Area')['area_risk_score'].mean().idxmax()}`
     - **Catégorie la plus fréquemment commandée :** `{df['Category'].mode()[0]}`
     """)
+
+show()

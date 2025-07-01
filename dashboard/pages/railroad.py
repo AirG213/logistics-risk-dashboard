@@ -4,10 +4,13 @@ import pandas as pd
 import base64
 from utils import load_csv, apply_responsive
 import plotly.express as px
+from sidebar import show_sidebar
+
+show_sidebar()
 
 def show_tab1(df):
 
-    st.subheader("Répartition par Type d’Accident")
+    st.subheader("Répartition par Type d'Accident")
     type_counts = df["Accident Type"].value_counts().reset_index()
     type_counts.columns = ["Accident Type", "Count"]
     fig_type = px.bar(
@@ -22,8 +25,8 @@ def show_tab1(df):
 
     st.markdown("---")
 
-    st.markdown("### Moyennes des Variables par Type d’Accident")
-    st.markdown("**Comparaison des indicateurs selon le type d’accident**")
+    st.markdown("### Moyennes des Variables par Type d'Accident")
+    st.markdown("**Comparaison des indicateurs selon le type d'accident**")
     variables = [
         "Total Damage Cost", "Total Persons Killed", "Total Persons Injured",
         "Hazmat Cars", "Hazmat Cars Damaged", "Persons Evacuated"
@@ -75,14 +78,14 @@ def show_tab1(df):
         (df_map["Longitude"].between(-125, -66))
     ]
 
-    fig_map = px.scatter_mapbox(
+    fig_map = px.scatter_map(
         df_map,
         lat="Latitude",
         lon="Longitude",
         color="Niveau_criticité",
         zoom=3,
         height=600,
-        mapbox_style="carto-positron",
+        map_style="carto-positron",
         color_discrete_map={
             "Low": "#2ecc71",
             "Medium": "#f1c40f",
@@ -215,28 +218,28 @@ def show():
 
     st.markdown("""
     ### Contexte et Source des Données
-    Ce module repose sur le dataset **[Railroad Accident/Incident Data – Kaggle](https://www.kaggle.com/datasets/chrico03/railroad-accident-and-incident-data)** :
-    - **Domaine :** Transport ferroviaire américain  
-    - **Format :** CSV (nettoyé)  
-    - **Description :** Plus de 60 000 rapports d’incidents (déraillements, collisions, feux, etc.), incluant type d'accident, état, nombre de personnes concernées, durée, dommages, et coordonnées géographiques.
-    - **Pourquoi ce choix ?** : Permet de détecter les zones ferroviaires critiques et d’analyser les types d’incidents impactant la chaîne logistique lourde.
+    Ce module repose sur le dataset **[Railroad Accident/Incident Data - Kaggle](https://www.kaggle.com/datasets/chrico03/railroad-accident-and-incident-data)** :
+    - **Domaine :** Transport ferroviaire américain
+    - **Format :** CSV (nettoyé)
+    - **Description :** Plus de 60 000 rapports d'incidents (déraillements, collisions, feux, etc.), incluant type d'accident, état, nombre de personnes concernées, durée, dommages, et coordonnées géographiques.
+    - **Pourquoi ce choix ?** : Permet de détecter les zones ferroviaires critiques et d'analyser les types d'incidents impactant la chaîne logistique lourde.
 
-    **Périmètre de l’étude :**
-    - L’analyse couvre uniquement les **20 dernières années** (2002–2022) sur la base de la colonne `Report Year`
-    - Les enregistrements antérieurs (jusqu’à 1975) ont été **exclus** de l’étude
+    **Périmètre de l'étude :**
+    - L'analyse couvre uniquement les **20 dernières années** (2002-2022) sur la base de la colonne `Report Year`
+    - Les enregistrements antérieurs (jusqu'à 1975) ont été **exclus** de l'étude
 
     **Le `Risque_composite`** est un indicateur calculé à partir de :
-    - la fréquence de l’incident  
-    - la gravité de ses conséquences (victimes, dégâts)  
-    - le niveau d'évacuation ou impact Hazmat  
+    - la fréquence de l'incident
+    - la gravité de ses conséquences (victimes, dégâts)
+    - le niveau d'évacuation ou impact Hazmat
 
     > Les valeurs sont normalisées pour aboutir à un `Niveau_criticité` qualitatif : Faible / Moyen / Élevé.
     """)
 
     # Charger les données nettoyées
     df = load_csv("../data/cleaned/railroad_accident_cleaned.csv")
-    
-    # Nettoyage des noms de colonnes (strip des espaces invisibles s’il y en a)
+
+    # Nettoyage des noms de colonnes (strip des espaces invisibles s'il y en a)
     df.columns = df.columns.str.strip()
 
     # Créer une colonne Date complète à partir des 3 colonnes séparées
@@ -292,12 +295,14 @@ def show():
     - **Total de personnes tuées :** {total_killed:,}
     - **Total de personnes blessées :** {total_injured:,}
     - **Coût total des dommages :** ${total_damage:,.0f}
-    - **État le plus touché :** {top_state}  
+    - **État le plus touché :** {top_state}
     ↳ Dommages cumulés : ${df[df['State Name'] == top_state]['Total Damage Cost'].sum():,.0f}
     - **Coût moyen par incident :** ${avg_damage:,.0f}
-    - **Année la plus critique :** {df['Report Year'].mode()[0]}  
-    ↳ Nombre d’incidents : {df['Report Year'].value_counts().max()}
-    - **Risque composite moyen :** {df['Risque_composite'].mean():.2e}  
+    - **Année la plus critique :** {df['Report Year'].mode()[0]}
+    ↳ Nombre d'incidents : {df['Report Year'].value_counts().max()}
+    - **Risque composite moyen :** {df['Risque_composite'].mean():.2e}
     ↳ (Score faible car basé sur 210M trajets)
     - **Niveau de criticité dominant :** {df['Niveau_criticité'].mode()[0]}
     """)
+
+show()
