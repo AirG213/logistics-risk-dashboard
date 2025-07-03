@@ -313,11 +313,11 @@ def show_tab3(df):
 
     with st.expander("💡 Interprétation de la corrélation entre les causes"):
         st.markdown(f"""
-        - Une **forte corrélation positive** entre certaines causes indique qu’elles surviennent souvent ensemble.
-        Exemple : les retards dus à **l’avion précédent** sont fortement liés aux **retards de la compagnie aérienne**, ce qui suggère des effets en chaîne internes.
-        - À l’inverse, une **faible ou nulle corrélation** entre deux causes (comme **météo** et **sécurité**) signifie qu’elles sont généralement indépendantes.
+        - Une **forte corrélation positive** entre certaines causes indique qu'elles surviennent souvent ensemble.
+        Exemple : les retards dus à **l'avion précédent** sont fortement liés aux **retards de la compagnie aérienne**, ce qui suggère des effets en chaîne internes.
+        - À l'inverse, une **faible ou nulle corrélation** entre deux causes (comme **météo** et **sécurité**) signifie qu'elles sont généralement indépendantes.
 
-        - La comparaison entre **temps de retard** et **nombre de retards** permet d’identifier les causes **fréquentes** mais peu longues, ou **rares** mais très **pénalisantes** en durée.
+        - La comparaison entre **temps de retard** et **nombre de retards** permet d'identifier les causes **fréquentes** mais peu longues, ou **rares** mais très **pénalisantes** en durée.
         """)
 
 def show():

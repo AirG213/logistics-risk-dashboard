@@ -6,7 +6,7 @@ from sidebar import show_sidebar
 
 show_sidebar()
 
-icon_base64 = get_base64("assets/traffic_accident_icon.png")
+icon_base64 = get_base64('assets/traffic_accident_icon.png')
 
 @st.cache_data
 def prepare_data(df):
@@ -79,18 +79,20 @@ def show():
     peak_hour_pct = (df[df['Risk_Category'] == 'Peak Hour Congestion'].shape[0] / total) * 100
     infra_block_mean = df[df['Risk_Category'] == 'High Infrastructure Block']['Duration(min)'].mean()
     weather_pct = (df[df['Risk_Category'] == 'Weather Disruption'].shape[0] / total) * 100
+    df['Start_Time'] = pd.to_datetime(df['Start_Time'])
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Heures de pointe", f"{peak_hour_pct:.1f} %")
-    col2.metric("Durée Blocage Moyenne", f"{infra_block_mean:.0f} min")
-    col3.metric("Perturbations Météo", f"{weather_pct:.1f} %")
-    col4.metric("Total Accidents", f"{total:,}")
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric('Heures de pointe', f'{peak_hour_pct:.1f} %')
+    col2.metric('Durée Blocage Moyenne', f'{infra_block_mean:.0f} min')
+    col3.metric('Perturbations Météo', f'{weather_pct:.1f} %')
+    col4.metric('Total Accidents', f'{total:,}')
+    col5.metric('Plage Temporelle', f'{df['Start_Time'].min().year} - {df['Start_Time'].max().year}')
 
     # TABS pour structurer la page
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Heatmap'])
 
     with tab1:
-        st.subheader("Répartition des Catégories de Risque")
+        st.subheader('Répartition des Catégories de Risque')
         fig_cat = px.bar(
             risk_summary,
             x='Count',
@@ -103,25 +105,25 @@ def show():
         st.plotly_chart(apply_responsive(fig_cat), use_container_width=True)
 
     with tab2:
-        st.subheader("Analyse par Heure de la Journée")
+        st.subheader('Analyse par Heure de la Journée')
         fig_hour_count = px.bar(hour_counts, x='HourOfDay', y='Count')
         st.plotly_chart(apply_responsive(fig_hour_count), use_container_width=True)
 
         fig_hour_score = px.line(hour_scores, x='HourOfDay', y='Risk_Score', markers=True)
         st.plotly_chart(apply_responsive(fig_hour_score), use_container_width=True)
 
-        st.markdown("---")
+        st.markdown('---')
 
-        st.subheader("Analyse par Jour de la Semaine")
+        st.subheader('Analyse par Jour de la Semaine')
         fig_day_count = px.bar(day_counts, x='DayOfWeek', y='Count')
         st.plotly_chart(apply_responsive(fig_day_count), use_container_width=True)
 
         fig_day_score = px.line(day_scores, x='DayOfWeek', y='Risk_Score', markers=True)
         st.plotly_chart(apply_responsive(fig_day_score), use_container_width=True)
 
-        st.markdown("---")
+        st.markdown('---')
 
-        st.subheader("Analyse par Mois")
+        st.subheader('Analyse par Mois')
         fig_month_count = px.bar(month_counts, x='Month', y='Count')
         st.plotly_chart(apply_responsive(fig_month_count), use_container_width=True)
 
@@ -129,18 +131,18 @@ def show():
         st.plotly_chart(apply_responsive(fig_month_score), use_container_width=True)
 
     with tab3:
-        st.subheader("Heatmap Risk_Score (Météo vs Heure)")
+        st.subheader('Heatmap Risk_Score (Météo vs Heure)')
         heatmap_pivot = heatmap.pivot(index='Main_Weather', columns='HourOfDay', values='Risk_Score')
         fig_heat = px.imshow(
             heatmap_pivot.values,
-            labels=dict(x="Heure", y="Météo", color="Risk_Score"),
+            labels=dict(x='Heure', y='Météo', color='Risk_Score'),
             x=heatmap_pivot.columns,
             y=heatmap_pivot.index,
-            title="Heatmap Risque Moyen (Météo vs Heure)"
+            title='Heatmap Risque Moyen (Météo vs Heure)'
         )
         st.plotly_chart(apply_responsive(fig_heat), use_container_width=True)
 
-        st.markdown("---")
+        st.markdown('---')
 
     # Résumé
     st.info(f"""

@@ -298,10 +298,8 @@ def show():
     col2.metric("Type d'accident le plus fréquent", most_common_type)
     col3.metric("Plage temporelle", f"{year_min} - {year_max}")
 
-    col4, col5, col6 = st.columns(3)
-    col4.metric("Zone géographique la plus touchée", most_common_zone)
-    col5.metric("Années distinctes", distinct_years)
-    col6.metric("Pollution totale (tonnes)", pollution_display)
+    col1.metric("Zone géographique la plus touchée", most_common_zone)
+    col2.metric("Pollution totale (tonnes)", pollution_display)
 
     tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
 

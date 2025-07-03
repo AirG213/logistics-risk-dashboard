@@ -1,7 +1,8 @@
 import streamlit as st
 import plotly.express as px
-from utils import load_csv, apply_responsive, get_base64
+from utils import load_csv, apply_responsive
 from sidebar import show_sidebar
+import pandas as pd
 
 show_sidebar()
 
@@ -31,6 +32,13 @@ def show():
     col_kpi2.metric("✈️ Retards Aériens", f"{int(df_airline['arr_del15'].sum()):,}")
     col_kpi3.metric("🚆 Accidents Ferroviaires", f"{len(df_railroad):,}")
     col_kpi4.metric("🚢 Accidents Maritimes", f"{len(df_shipping):,}")
+
+    df_traffic['Start_Time'] = pd.to_datetime(df_traffic['Start_Time'])
+
+    col_kpi1.metric('🚗 Plage Temporelle', f'{df_traffic['Start_Time'].min().year} - {df_traffic['Start_Time'].max().year}')
+    col_kpi2.metric('✈️ Plage Temporelle', f'{df_airline['year'].min().astype(int)} - {df_airline['year'].max().astype(int)}')
+    col_kpi3.metric('🚆 Plage Temporelle', f'{df_railroad['Report Year'].min().astype(int)} - {df_railroad['Report Year'].max().astype(int)}')
+    col_kpi4.metric('🚢 Plage Temporelle', f'{df_shipping['Year'].min().astype(int)} - {df_shipping['Year'].max().astype(int)}')
 
     st.markdown("---")
 
@@ -84,7 +92,7 @@ def show():
             color="Cause",
             text="Nombre de retards",
             title="Top 3 des causes de retard",
-            color_discrete_sequence=px.colors.qualitative.Set1
+            color_discrete_sequence=px.colors.qualitative.Set2
         )
         st.plotly_chart(apply_responsive(fig_air), use_container_width=True)
 
@@ -106,7 +114,7 @@ def show():
             orientation="h",
             color="Accident Type",
             title="Top 3 des types d'accident",
-            color_discrete_sequence=px.colors.qualitative.Set3
+            color_discrete_sequence=px.colors.qualitative.Set2
         )
         st.plotly_chart(apply_responsive(fig_rail), use_container_width=True)
 

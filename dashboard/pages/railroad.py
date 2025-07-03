@@ -264,15 +264,15 @@ def show():
     max_damage_state = df.groupby("State Name")["Total Damage Cost"].sum().idxmax()
     top_state = df["State Name"].value_counts().idxmax()
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric("Incidents Totaux", f"{total_incidents:,}")
     col2.metric("Personnes Tuées", f"{total_killed:,}")
     col3.metric("Personnes Blessées", f"{total_injured:,}")
+    col4.metric("État + Touché ($)", max_damage_state)
 
-    col4, col5, col6 = st.columns(3)
-    col4.metric("Dommages Totaux", f"${total_damage:,.0f}")
-    col5.metric("Dommage Moyen", f"${avg_damage:,.0f}")
-    col6.metric("État + Touché ($)", max_damage_state)
+    col1.metric("Dommages Totaux", f"${total_damage:,.0f}")
+    col2.metric("Dommage Moyen", f"${avg_damage:,.0f}")
+    col3.metric("Plage Temporelle", f"{df["Report Year"].min().astype(int)} - {df["Report Year"].max().astype(int)}")
 
     tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
 

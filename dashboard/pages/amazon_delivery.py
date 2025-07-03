@@ -239,12 +239,14 @@ def show():
 
     # KPIs globaux
     st.markdown("### Indicateurs Clés Globaux")
+    df['Order_Date'] = pd.to_datetime(df['Order_Date'])
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Livraisons", len(df))
     col2.metric("Retards (>120 min)", int(df["delivery_risk"].sum()))
     col3.metric("Délai Moyen", f"{df['Delivery_Time'].mean():.1f} min")
     col4.metric("Résilience Moyenne", f"{df['weather_traffic_resilience_score'].mean():.2f}")
+    col5.metric('Plage Temporelle', f'{df['Order_Date'].min().year} - {df['Order_Date'].max().year}')
 
     tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyse Temporelle", "Heatmap"])
 
