@@ -8,16 +8,31 @@ from sidebar import show_sidebar
 show_sidebar()
 
 def show_tab1(df):
-    # Histogramme des temps de livraison
-    st.markdown("### Distribution des Temps de Livraison (en minutes)")
-    fig_hist = px.histogram(df, x="Delivery_Time", nbins=50, color_discrete_sequence=["#1f77b4"])
-    apply_responsive(fig_hist)
-    st.plotly_chart(fig_hist, use_container_width=True)
+    # 1. Histogramme - Temps de Livraison
+    st.markdown("### Répartition des Temps de Livraison (en minutes)")
+    fig_hist = px.histogram(
+        df,
+        x="Delivery_Time",
+        nbins=50,
+        labels={"Delivery_Time": "Temps de Livraison (minutes)"},
+        color_discrete_sequence=["#1f77b4"]
+    )
+    fig_hist.update_yaxes(title_text="Nombre de commandes")
+    st.plotly_chart(apply_responsive(fig_hist), use_container_width=True)
+
+    with st.expander("📊 Interprétation du graphique"):
+        st.markdown("""
+        Ce graphique montre la **distribution des temps de livraison** pour les commandes Amazon simulées.  
+        Chaque barre représente le **nombre de livraisons** réalisées dans une plage de temps donnée (en minutes).
+
+        - Une **concentration élevée à gauche** signifie que la majorité des livraisons sont rapides.
+        - Une **queue étendue à droite** peut indiquer des retards ou des zones problématiques.
+        """)
 
     st.markdown("---")
 
-    # Top contextes à risque (Weather x Traffic)
-    st.markdown("### Contextes les Plus à Risque (Météo & Trafic)")
+    # 2. Contextes à Risque (Météo x Circulation)
+    st.markdown("### Contextes les Plus à Risque (Météo & Circulation)")
     top_risks = (
         df.groupby(['Weather', 'Traffic'])['delivery_risk']
         .mean()
@@ -25,29 +40,56 @@ def show_tab1(df):
         .head(5)
         .reset_index()
     )
-    st.dataframe(top_risks, hide_index=True, use_container_width=True)
+    st.dataframe(top_risks.rename(columns={
+        "Weather": "Conditions Météo",
+        "Traffic": "Conditions de Circulation",
+        "delivery_risk": "Score de Risque Moyen"
+    }), hide_index=True, use_container_width=True)
+
+    with st.expander("📊 Interprétation du tableau"):
+        st.markdown("""
+        Ce tableau affiche les combinaisons météo + trafic qui présentent le **plus haut risque moyen de retard**.
+        Cela permet d’identifier les situations critiques à anticiper.
+        """)
 
     st.markdown("---")
 
-    # Zones géographiques avec le plus de risques
+    # 3. Zones Géographiques à Risque
     st.markdown("### Zones Géographiques à Risque")
+
+    df['Area_cleaned'] = df['Area'].str.strip()
+
     area_risks = (
-        df.groupby('Area', as_index=False)['area_risk_score']
+        df.groupby('Area_cleaned', as_index=False)['area_risk_score']
         .mean()
         .sort_values(by="area_risk_score", ascending=False)
     )
-    st.dataframe(area_risks, hide_index=True, use_container_width=True)
+
+    st.dataframe(area_risks.rename(columns={
+        "Area_cleaned": "Zone",
+        "area_risk_score": "Score de Risque Moyen"
+    }), hide_index=True, use_container_width=True)
+
+    with st.expander("📊 Interprétation du tableau"):
+        st.markdown("""
+        Ce tableau montre quelles zones géographiques (urbaines, semi-urbaines, etc.) sont les plus sujettes aux retards de livraison.
+        """)
 
     st.markdown("---")
 
-    # Catégories les plus représentées
-    st.markdown("### Catégories de Produits les plus Vendues")
+    # 4. Catégories les plus Commandées
+    st.markdown("### Catégories de Produits les plus Commandées")
     top_categories = (
         df['Category'].value_counts()
         .reset_index()
-        .rename(columns={'index': 'Category', 'Category': 'Occurrences'})
+        .rename(columns={'index': 'Catégorie', 'Category': 'Occurrences'})
     ).head(5)
     st.dataframe(top_categories, hide_index=True, use_container_width=True)
+
+    with st.expander("📊 Interprétation du tableau"):
+        st.markdown("""
+        Ce tableau met en avant les **catégories de produits** les plus souvent commandées. Cela peut indiquer les préférences des clients.
+        """)
 
 def show_tab2(df):
     df_time = df.copy()
@@ -56,86 +98,109 @@ def show_tab2(df):
     df_time["Pickup_Hour"] = pd.to_datetime(df_time["Pickup_Time"], format="%H:%M:%S", errors="coerce").dt.hour
     df_time["DayOfWeek"] = df_time["Order_Date"].dt.day_name()
 
-    # Bloc 1 — Volume global par heure
+    # Bloc 1
     st.subheader("Volume de Commandes par Heure de la Journée")
-    fig_orders = px.histogram(df_time, x="Order_Hour", nbins=24, labels={"Order_Hour": "Heure"},
-                              title="Nombre de commandes passées par heure",
-                              color_discrete_sequence=["#006eff"])
+    fig_orders = px.histogram(df_time, x="Order_Hour", nbins=24,
+                            labels={
+                                "Order_Hour": "Heure",
+                                "y": "Nombre de commandes"
+                            },                              
+                            title="Nombre de commandes passées par heure",
+                            color_discrete_sequence=["#006eff"])
     fig_orders.update_layout(margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_orders)
-    st.plotly_chart(fig_orders, use_container_width=True)
+    fig_orders.update_yaxes(title_text="Nombre de commandes")
+    st.plotly_chart(apply_responsive(fig_orders), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Ce graphique montre à quelles heures les clients passent le plus de commandes. Cela peut refléter les pics d'activité journaliers.")
 
     st.markdown("---")
 
-    # Bloc 2 — Temps de livraison moyen par heure
+    # Bloc 2
     st.subheader("Temps de Livraison selon l'Heure de Commande")
     fig_box = px.box(df_time, x="Order_Hour", y="Delivery_Time",
                      labels={"Order_Hour": "Heure", "Delivery_Time": "Temps de livraison (min)"},
                      title="Distribution des délais selon l'heure de la commande",
                      color_discrete_sequence=["#9b59b6"])
-    fig_box.update_layout(margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_box)
-    st.plotly_chart(fig_box, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_box), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Ce graphique montre la distribution des durées de livraison selon l'heure à laquelle la commande est passée. Il permet d'observer les heures à risques.")
 
     st.markdown("---")
 
-    # Bloc 3 — Risque de retard par heure
+    # Bloc 3
     st.subheader("Taux de Retard (>120min) par Heure")
     risk_by_hour = df_time.groupby("Order_Hour")["delivery_risk"].mean().reset_index()
     fig_risk_hour = px.line(risk_by_hour, x="Order_Hour", y="delivery_risk", markers=True,
-                            labels={"delivery_risk": "Taux de retard"},
+                            labels={"Order_Hour": "Heure de commande", "delivery_risk": "Taux de retard"},
                             title="Proportion de retards selon l'heure de la commande",
                             color_discrete_sequence=["#e74c3c"])
     fig_risk_hour.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_risk_hour)
-    st.plotly_chart(fig_risk_hour, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_risk_hour), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Ce graphique indique la proportion moyenne de livraisons retardées en fonction de l’heure de commande.")
 
     st.markdown("---")
 
-    # Bloc 4 — Risque de retard par jour de la semaine
+    # Bloc 4
     st.subheader("Taux de Retard selon le Jour de la Semaine")
-    risk_by_day = df_time.groupby("DayOfWeek")["delivery_risk"].mean().reindex([
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]).reset_index()
-    fig_risk_day = px.bar(risk_by_day, x="DayOfWeek", y="delivery_risk",
-                          labels={"delivery_risk": "Taux de retard"},
-                          title="Retards moyens par jour de la semaine",
-                          color_discrete_sequence=["#f39c12"])
+    # --- Ajout du mapping FR ---
+    mapping_weekday = {
+        "Monday": "Lundi",
+        "Tuesday": "Mardi",
+        "Wednesday": "Mercredi",
+        "Thursday": "Jeudi",
+        "Friday": "Vendredi",
+        "Saturday": "Samedi",
+        "Sunday": "Dimanche"
+    }
+    ordered_days_fr = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    df_time["DayOfWeek_FR"] = df_time["DayOfWeek"].replace(mapping_weekday)
+    risk_by_day = df_time.groupby("DayOfWeek_FR")["delivery_risk"].mean().reindex(ordered_days_fr).reset_index()
+    fig_risk_day = px.bar(
+        risk_by_day, x="DayOfWeek_FR", y="delivery_risk",
+        labels={"DayOfWeek_FR": "Jour de la semaine", "delivery_risk": "Taux de retard"},
+        title="Retards moyens par jour de la semaine",
+        color_discrete_sequence=["#f39c12"]
+    )
     fig_risk_day.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_risk_day)
-    st.plotly_chart(fig_risk_day, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_risk_day), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Ce graphique montre quel jour de la semaine connaît en moyenne le plus de retards dans les livraisons.")
 
     st.markdown("---")
 
-    # Bloc 5 — Comparaison matin vs soir
+    # Bloc 5
     st.subheader("Matin vs Soir : Comparaison du Taux de Retard")
     df_time["Period"] = df_time["Order_Hour"].apply(lambda h: "Matin (6h-12h)" if 6 <= h < 12 else
-                                                              "Après-midi (12h-18h)" if 12 <= h < 18 else
-                                                              "Soir/Nuit (18h-6h)")
+                                                               "Après-midi (12h-18h)" if 12 <= h < 18 else
+                                                               "Soir/Nuit (18h-6h)")
     risk_by_period = df_time.groupby("Period")["delivery_risk"].mean().reindex([
         "Matin (6h-12h)", "Après-midi (12h-18h)", "Soir/Nuit (18h-6h)"]).reset_index()
     fig_risk_period = px.bar(risk_by_period, x="Period", y="delivery_risk",
-                             labels={"delivery_risk": "Taux de retard"},
+                             labels={"Period": "Période", "delivery_risk": "Taux de retard"},
                              title="Taux de retard en fonction du moment de la journée",
                              color_discrete_sequence=["#1abc9c"])
     fig_risk_period.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_risk_period)
-    st.plotly_chart(fig_risk_period, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_risk_period), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Cette comparaison permet de voir à quels moments de la journée les risques de retard sont les plus élevés.")
 
     st.markdown("---")
 
-    # Bloc 6 — Évolution temporelle globale (par date)
+    # Bloc 6
     st.subheader("Évolution Globale du Taux de Retard")
     risk_by_date = df_time.groupby("Order_Date")["delivery_risk"].mean().reset_index()
     fig_date = px.line(risk_by_date, x="Order_Date", y="delivery_risk", markers=True,
-                       labels={"delivery_risk": "Taux de retard"},
+                       labels={"Order_Date": "Date de commande", "delivery_risk": "Taux de retard"},
                        title="Évolution du risque de retard sur la période analysée",
                        color_discrete_sequence=["#2980b9"])
     fig_date.update_layout(yaxis_tickformat=".0%", margin=dict(l=0, r=0, t=40, b=0))
-    apply_responsive(fig_date)
-    st.plotly_chart(fig_date, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_date), use_container_width=True)
+    with st.expander("🧠 Comment lire ce graphique ?"):
+        st.write("Ce graphique montre la tendance générale des retards dans le temps, ce qui peut révéler une amélioration ou une détérioration du service.")
 
 def show_tab3(df):
-    # Météo × Trafic
+    # Bloc 1 — Météo × Trafic
     st.subheader("Carte des Risques — Météo x Trafic")
     risk_weather_traffic = df.pivot_table(index="Weather", columns="Traffic", values="delivery_risk", aggfunc="mean")
     fig1 = px.imshow(
@@ -143,15 +208,19 @@ def show_tab3(df):
         text_auto=".2f",
         color_continuous_scale="Reds",
         aspect="auto",
-        labels=dict(color="Taux de retard"),
+        labels=dict(x="Trafic", y="Météo", color="Taux de retard"),
         title="Taux de retard (>120min) selon Météo et Trafic"
     )
-    st.plotly_chart(fig1, use_container_width=True)
-    apply_responsive(fig1)
+    st.plotly_chart(apply_responsive(fig1), use_container_width=True)
+    with st.expander("🧠 Interprétation de la carte Météo x Trafic"):
+        st.markdown("""
+        Cette carte montre le **taux moyen de retard** en fonction des conditions météorologiques et de circulation.  
+        Les cellules les plus rouges signalent les **contextes les plus critiques** (ex : orage + embouteillage).
+        """)
 
     st.markdown("---")
 
-    # Zone x Météo
+    # Bloc 2 — Zone x Météo
     st.subheader("Carte des Risques — Zone x Météo")
     risk_area_weather = df.pivot_table(index="Weather", columns="Area", values="delivery_risk", aggfunc="mean")
     fig2 = px.imshow(
@@ -159,31 +228,53 @@ def show_tab3(df):
         text_auto=".2f",
         color_continuous_scale="Oranges",
         aspect="auto",
-        labels=dict(color="Taux de retard"),
+        labels=dict(x="Zone", y="Météo", color="Taux de retard"),
         title="Taux de retard selon Zone et Météo"
     )
-    st.plotly_chart(fig2, use_container_width=True)
-    apply_responsive(fig2)
+    st.plotly_chart(apply_responsive(fig2), use_container_width=True)
+    with st.expander("🧠 Interprétation de la carte Zone x Météo"):
+        st.markdown("""
+        Cette carte croise les zones géographiques avec les conditions météo pour révéler les **zones les plus sensibles** aux retards.
+        """)
 
     st.markdown("---")
 
-    # Jour x Heure
+    # Bloc 3 — Jour x Heure
     st.subheader("Carte des Risques — Jour x Heure de Commande")
     df["Order_Hour"] = pd.to_datetime(df["Order_Time"], format="%H:%M:%S", errors="coerce").dt.hour
     df["DayOfWeek"] = pd.to_datetime(df["Order_Date"], format="%Y-%m-%d", errors="coerce").dt.day_name()
-    ordered_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    risk_day_hour = df.pivot_table(index="DayOfWeek", columns="Order_Hour", values="delivery_risk", aggfunc="mean")
-    risk_day_hour = risk_day_hour.reindex(ordered_days)
+    mapping_weekday = {
+        "Monday": "Lundi",
+        "Tuesday": "Mardi",
+        "Wednesday": "Mercredi",
+        "Thursday": "Jeudi",
+        "Friday": "Vendredi",
+        "Saturday": "Samedi",
+        "Sunday": "Dimanche"
+    }
+    ordered_days_fr = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    df["DayOfWeek_FR"] = df["DayOfWeek"].replace(mapping_weekday)
+    risk_day_hour = df.pivot_table(
+        index="DayOfWeek_FR",
+        columns="Order_Hour",
+        values="delivery_risk",
+        aggfunc="mean"
+    )
+    risk_day_hour = risk_day_hour.reindex(ordered_days_fr)
     fig3 = px.imshow(
         risk_day_hour,
         text_auto=False,
         color_continuous_scale="Purples",
         aspect="auto",
-        labels=dict(color="Taux de retard"),
+        labels=dict(x="Heure de commande", y="Jour de la semaine", color="Taux de retard"),
         title="Retards selon le Jour et l'Heure de Commande"
     )
-    st.plotly_chart(fig3, use_container_width=True)
-    apply_responsive(fig3)
+    st.plotly_chart(apply_responsive(fig3), use_container_width=True)
+    with st.expander("🧠 Interprétation de la carte Jour x Heure"):
+        st.markdown("""
+        Cette carte permet d’identifier **les moments les plus propices aux retards** selon le jour et l’heure de la commande.  
+        Elle est utile pour ajuster les stratégies logistiques en fonction du calendrier.
+        """)
 
 def show():
     # Charger l'icône et encoder en base64
