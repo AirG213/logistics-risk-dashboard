@@ -57,13 +57,14 @@ def show_tab1(df):
             names="Classe de Risque",
             values="Nombre",
             title="Niveau de Risque des Accidents",
+            color="Classe de Risque",
             color_discrete_map={
-                "Low": "green",
-                "Medium": "orange",
-                "High": "red",
-                "Critical": "black",
+                "Bas": "#2ecc71",
+                "Medium": "#f1c40f",
+                "Haut": "#e67e22",
+                "Critique": "#e74c3c",
             },
-            category_orders={"Classe de Risque": ["Low", "Medium", "High", "Critical"]},
+            category_orders={"Classe de Risque": ["Bas", "Medium", "Haut", "Critique"]},
         )
         st.plotly_chart(apply_responsive(fig_risk), use_container_width=True)
 
@@ -93,10 +94,10 @@ def show_tab1(df):
         Le **Score de Risque** est un indicateur composite calculé à partir d'une pondération des dommages matériels, de la pollution et du profil du navire.
 
         **Seuils de classification utilisés (dynamiquement par quantiles) :**
-        - **Low** : 0 ≤ score ≤ `{q[1]:.3f}`
+        - **Bas** : 0 ≤ score ≤ `{q[1]:.3f}`
         - **Medium** : `{q[1]:.3f}` < score ≤ `{q[2]:.3f}`
-        - **High** : `{q[2]:.3f}` < score ≤ `{q[3]:.3f}`
-        - **Critical** : `{q[3]:.3f}` < score ≤ `{q[4]:.3f}`
+        - **Haut** : `{q[2]:.3f}` < score ≤ `{q[3]:.3f}`
+        - **Critique** : `{q[3]:.3f}` < score ≤ `{q[4]:.3f}`
 
         > Ces seuils permettent de diviser les incidents en **quatre groupes de gravité**, selon la distribution des risques dans le dataset.
         """)
@@ -266,7 +267,7 @@ def show():
 
     - **Calcul du Score de Risque :**
       Chaque incident est évalué à travers un score composite calculé comme une moyenne pondérée de trois dimensions : la sévérité des dommages, le niveau de pollution, et le profil de vulnérabilité du navire. Ce score, compris entre 0 et 1, est défini par la formule suivante :
-      `Risk_Score = 0.5 × Damage_Severe + 0.3 × Pollution_Score + 0.2 × Ship_Profile_Score`
+      `Risk_Score = 0.5 x Damage_Severe + 0.3 x Pollution_Score + 0.2 x Ship_Profile_Score`
     """)
 
     # Charger les données nettoyées

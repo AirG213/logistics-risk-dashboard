@@ -201,7 +201,6 @@ def show_tab2(df):
                 result_frames.append(averages.copy())
 
         animated_df = pd.DataFrame(result_frames)
-        animated_df['Texte'] = animated_df['Temps moyen (min)'].apply(lambda x: f"{x:.2f}")
         animated_df_sorted = animated_df.sort_values(by='Temps moyen (min)', ascending=False)
 
         fig = px.bar(
@@ -212,7 +211,8 @@ def show_tab2(df):
             orientation='h',
             color='Cause',
             color_discrete_map=color_map,
-            text='Texte',
+            text='Temps moyen (min)',
+            labels={'year': 'Année'},
             template='plotly_white',
             range_x=[0,30]
         )
