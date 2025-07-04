@@ -39,10 +39,11 @@ python run_project.py
 
 Ce script va automatiquement :
 
-- [1/4] Créer un environnement virtuel `.venv` s’il n’existe pas
-- [2/4] Installer les dépendances (`requirements.txt`)
-- [3/4] Télécharger les datasets (via Kaggle CLI + token intégré dans le code)
-- [4/4] Lancer le dashboard interactif avec Streamlit
+- [1/5] Créer un environnement virtuel `.venv` s’il n’existe pas
+- [2/5] Installer les dépendances (`requirements.txt`)
+- [3/5] Télécharger les datasets (via Kaggle CLI + token intégré dans le code)
+- [4/5] Vérification des datasets
+- [5/5] Lancer le dashboard interactif avec Streamlit
 
 > ⚠️ Si un fichier ou dataset manque ou échoue au téléchargement, lancer manuellemnt /data_sources/data_pipeline.ipynb, sinon si le **token privé** a expiré.  
 > Merci de contacter un membre du projet pour obtenir un nouveau token (1 dataset sur 6 est privé).
