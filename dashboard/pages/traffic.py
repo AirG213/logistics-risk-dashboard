@@ -76,9 +76,9 @@ def show():
 
     # KPI
     total = df.shape[0]
-    peak_hour_pct = (df[df['Risk_Category'] == 'Peak Hour Congestion'].shape[0] / total) * 100
-    infra_block_mean = df[df['Risk_Category'] == 'High Infrastructure Block']['Duration(min)'].mean()
-    weather_pct = (df[df['Risk_Category'] == 'Weather Disruption'].shape[0] / total) * 100
+    peak_hour_pct = (df[df['Risk_Category'] == 'Heure de Pointe'].shape[0] / total) * 100
+    infra_block_mean = df[df['Risk_Category'] == 'Blocage Infrastructure']['Duration(min)'].mean()
+    weather_pct = (df[df['Risk_Category'] == 'Perturbation Météo'].shape[0] / total) * 100
     df['Start_Time'] = pd.to_datetime(df['Start_Time'])
 
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -100,55 +100,163 @@ def show():
             orientation='h',
             text='Proportion (%)',
             color='Risk_Category',
-            color_discrete_sequence=px.colors.qualitative.Set2
+            color_discrete_sequence=px.colors.qualitative.Set2,
+            labels={
+                'Count': "Nombre d'incidents",
+                'Risk_Category': "Catégorie de Risque"
+            }
         )
         st.plotly_chart(apply_responsive(fig_cat), use_container_width=True)
 
+        with st.expander("📊 Interprétation du graphique"):
+            st.markdown("""
+            Ce graphique illustre la **répartition des incidents** selon différentes catégories de risque.  
+            - L'axe horizontal représente le **nombre total d'incidents** enregistrés.
+            - L'axe vertical indique la **catégorie de risque**.
+            Cela permet de visualiser rapidement les types de risques les plus fréquents.
+            """)
+        st.markdown('---')
+
     with tab2:
         st.subheader('Analyse par Heure de la Journée')
-        fig_hour_count = px.bar(hour_counts, x='HourOfDay', y='Count')
-        st.plotly_chart(apply_responsive(fig_hour_count), use_container_width=True)
 
-        fig_hour_score = px.line(hour_scores, x='HourOfDay', y='Risk_Score', markers=True)
+        fig_hour_count = px.bar(
+            hour_counts, x='HourOfDay', y='Count',
+            labels={'HourOfDay': 'Heure', 'Count': "Nombre d'incidents"}
+        )
+        st.plotly_chart(apply_responsive(fig_hour_count), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique montre le **nombre total d’incidents** selon l’heure de la journée (0 = minuit, 23 = 23h).")
+
+        fig_hour_score = px.line(
+            hour_scores, x='HourOfDay', y='Risk_Score', markers=True,
+            labels={'HourOfDay': 'Heure', 'Risk_Score': "Score de Risque"}
+        )
         st.plotly_chart(apply_responsive(fig_hour_score), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique montre l’**évolution du score de risque moyen** en fonction de l’heure de l’incident.")
 
         st.markdown('---')
 
         st.subheader('Analyse par Jour de la Semaine')
-        fig_day_count = px.bar(day_counts, x='DayOfWeek', y='Count')
-        st.plotly_chart(apply_responsive(fig_day_count), use_container_width=True)
 
-        fig_day_score = px.line(day_scores, x='DayOfWeek', y='Risk_Score', markers=True)
+        fig_day_count = px.bar(
+            day_counts, x='DayOfWeek', y='Count',
+            labels={'DayOfWeek': 'Jour de la semaine (0 = Lundi)', 'Count': "Nombre d'incidents"}
+        )
+        st.plotly_chart(apply_responsive(fig_day_count), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique affiche le **nombre total d’incidents** pour chaque jour de la semaine. (0 = Lundi, 6 = Dimanche)")
+
+        fig_day_score = px.line(
+            day_scores, x='DayOfWeek', y='Risk_Score', markers=True,
+            labels={'DayOfWeek': 'Jour de la semaine (0 = Lundi)', 'Risk_Score': "Score de Risque"}
+        )
         st.plotly_chart(apply_responsive(fig_day_score), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique montre le **score de risque moyen** associé à chaque jour de la semaine.")
 
         st.markdown('---')
 
         st.subheader('Analyse par Mois')
-        fig_month_count = px.bar(month_counts, x='Month', y='Count')
-        st.plotly_chart(apply_responsive(fig_month_count), use_container_width=True)
 
-        fig_month_score = px.line(month_scores, x='Month', y='Risk_Score', markers=True)
+        fig_month_count = px.bar(
+            month_counts, x='Month', y='Count',
+            labels={'Month': 'Mois', 'Count': "Nombre d'incidents"}
+        )
+        st.plotly_chart(apply_responsive(fig_month_count), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique indique le **volume d’incidents** par mois sur la période analysée.")
+
+        fig_month_score = px.line(
+            month_scores, x='Month', y='Risk_Score', markers=True,
+            labels={'Month': 'Mois', 'Risk_Score': "Score de Risque"}
+        )
         st.plotly_chart(apply_responsive(fig_month_score), use_container_width=True)
+        with st.expander("📊 Comment lire ce graphique ?"):
+            st.markdown("Ce graphique montre **l’évolution du score de risque moyen par mois**.")
+
 
     with tab3:
-        st.subheader('Heatmap Risk_Score (Météo vs Heure)')
-        heatmap_pivot = heatmap.pivot(index='Main_Weather', columns='HourOfDay', values='Risk_Score')
-        fig_heat = px.imshow(
+    
+        st.subheader("Heatmap Risk_Score (Météo vs Heure)")
+        df['HourGroupStart'] = (df['HourOfDay'] // 2) * 2
+        df['HourGroup'] = df['HourGroupStart'].astype(str) + "h-" + (df['HourGroupStart'] + 2).astype(str) + "h"
+        hour_order = [f"{h}h-{h+2}h" for h in range(0, 24, 2)]
+        df['HourGroup'] = pd.Categorical(df['HourGroup'], categories=hour_order, ordered=True)
+        weather_order = ['Clair', 'Brouillard', 'Pluie', 'Neige', 'Orage', 'Autres']
+        df['Main_Weather'] = df['Main_Weather'].astype(str).str.strip()
+        df['Main_Weather'] = df['Main_Weather'].replace("", "Autres")
+        df['Main_Weather'] = df['Main_Weather'].where(df['Main_Weather'].isin(weather_order), "Autres")
+        df['Main_Weather'] = pd.Categorical(df['Main_Weather'], categories=weather_order, ordered=True)
+        heatmap_pivot = df.pivot_table(
+            index="Main_Weather",
+            columns="HourGroup",
+            values="Risk_Score",
+            aggfunc="mean",
+            observed=False
+        ).round(2)
+        fig = px.imshow(
             heatmap_pivot.values,
-            labels=dict(x='Heure', y='Météo', color='Risk_Score'),
+            labels={"x": "Heure de la Journée", "y": "Conditions Météo", "color": "Score de Risque"},
             x=heatmap_pivot.columns,
             y=heatmap_pivot.index,
-            title='Heatmap Risque Moyen (Météo vs Heure)'
+            color_continuous_scale="Reds",
+            text_auto=".2f",
+            title="Carte de Chaleur du Risque (Météo vs Heure)"
         )
-        st.plotly_chart(apply_responsive(fig_heat), use_container_width=True)
+        st.plotly_chart(apply_responsive(fig), use_container_width=True)
+        with st.expander("🧠 Comment lire cette heatmap ?"):
+            st.markdown("""
+            Cette carte montre la **moyenne des scores de risque** en fonction de l'**heure de la journée** (par tranches de 2h)  
+            et des **conditions météorologiques**.
 
+            - Les **zones plus sombres** indiquent un **risque plus élevé**.
+            - Cela permet d'identifier les créneaux horaires et conditions météo les plus critiques.
+            """)
         st.markdown('---')
+
+        # Météo x Jour de la Semaine
+        st.subheader("Carte de Chaleur du Risque (Météo vs Jour de la Semaine)")
+        # Traduction des jours
+        jours_fr = {
+            0: "Lundi", 1: "Mardi", 2: "Mercredi", 3: "Jeudi",
+            4: "Vendredi", 5: "Samedi", 6: "Dimanche"
+        }
+        df["DayOfWeek_fr"] = df["DayOfWeek"].map(jours_fr)
+        # Matrice de corrélation
+        heatmap_week = df.pivot_table(
+            index="Main_Weather",
+            columns="DayOfWeek_fr",
+            values="Risk_Score",
+            aggfunc="mean",
+            observed=False
+        ).round(2)
+        # Reordonne les jours
+        heatmap_week = heatmap_week[["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]]
+        # Affichage
+        fig_week = px.imshow(
+            heatmap_week,
+            labels=dict(x="Jour de la Semaine", y="Conditions Météo", color="Score de Risque"),
+            color_continuous_scale="Reds",
+            text_auto=True,
+            aspect="auto",
+            title="Score de Risque Moyen selon la Météo et le Jour"
+        )
+        st.plotly_chart(apply_responsive(fig_week), use_container_width=True)
+        with st.expander("📌 Comment lire cette heatmap ?"):
+            st.markdown("""
+            Cette carte montre la moyenne des **scores de risque** en fonction des **conditions météo** (axe Y) et du **jour de la semaine** (axe X).
+
+            Elle permet d’identifier les jours où les conditions météo influencent le plus les risques, comme le lundi pluvieux ou le samedi enneigé.
+            """)
+        st.markdown("---")
 
     # Résumé
     st.info(f"""
     **Résumé du module :**
     - Heures de pointe : {peak_hour_pct:.1f}% des incidents contribuent directement à la congestion.
-    - Incidents « High Infrastructure Block » : durée moyenne {infra_block_mean:.0f} minutes.
+    - Incidents « Blocage Infrastructure » : durée moyenne {infra_block_mean:.0f} minutes.
     - Perturbations météo : {weather_pct:.1f}% des cas (pluie, neige, brouillard).
     - Total incidents analysés : {total:,}.
     """)
