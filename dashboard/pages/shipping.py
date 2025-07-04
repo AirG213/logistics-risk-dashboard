@@ -43,6 +43,19 @@ def show_tab1(df):
         )
         st.plotly_chart(apply_responsive(fig_zone), use_container_width=True)
 
+    with st.expander("📊 Interprétation des graphiques"):
+        st.markdown("""
+        - **Type d'accident** : La plupart des incidents sont dus à des **erreurs de navigation ou de manoeuvre** (telles que des collisions, des échouements...), qui représentent environ 58 % des cas. Ils sont suivis par des accidents non classés (catégorie "Autre"), qui comptent pour 27 %. Les autres types d'incidents demeurent marginaux.
+        - **Zone géographique** : Les accidents surviennent principalement en **mer côtière** (43%), puis **en approche du port** (26%) et en **zone portuaire** (18%). La **mer ouverte** est la zone la moins touchée (12%).
+        """)
+
+    st.markdown("""> **Note :** Les zones géographiques sont définies comme suit :
+> - **Port** : Zone portuaire (zone de 3 km autour du port)
+> - **Approche portuaire** : Zone de 10 km autour du port
+> - **Mer côtière** : Zone maritime au-delà de 10 km du port
+> - **Mer ouverte** : Au-delà de 22 km du littoral (hors des eaux territoriales)
+    """)
+
     st.markdown("---")
 
     # Gauche : Classe de Risque | Droite : Distribution Risk Score
@@ -111,17 +124,20 @@ def show_tab2(df):
 
     # Carte des incidents animée par année
     st.subheader("Cartographie Animée des Accidents Maritimes")
-    fig_map = px.scatter_map(
+    fig_map = px.density_map(
         df,
         lat="Latitude",
         lon="Longitude",
+        z=[1]*len(df),
+        radius=5,
         hover_name="Acc_Type",
         hover_data=["Risk_Score", "Location"],
-        color_discrete_sequence=["red"],
+        color_continuous_scale='viridis',
         zoom=3,
         height=500,
         animation_frame="Year",
-        animation_group="Unique_ID"
+        animation_group="Unique_ID",
+        labels={"z": "Densité", "Year": "Année", "Unique_ID": "ID Unique", "Risk_Score": "Score de Risque", "Location": "Zone Géographique"},
     )
     fig_map.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
     fig_map.update_layout(transition_duration=500)
@@ -141,8 +157,14 @@ def show_tab2(df):
             labels={"x": "Année", "y": "Nombre d'accidents"},
             markers=True
         )
-        fig_years.update_layout(title="Accidents par an", xaxis=dict(dtick=1))
+        fig_years.update_layout(title="Accidents par an")
         st.plotly_chart(fig_years, use_container_width=True)
+
+        with st.expander("📊 Interprétation du graphique"):
+            st.markdown("""
+            - **2003-2017** : Période de faible activité, avec un nombre d'accidents entre 50 et 200 par an.
+            - **2018-2023** : Forte augmentation, culminant à plus de 438 incidents en 2021.
+            """)
 
     with col2:
         st.subheader("Évolution du Score de Risque Moyen par Année")
@@ -156,6 +178,11 @@ def show_tab2(df):
         )
         fig_risk.update_layout(title="Score de Risque Moyen par Année", yaxis_range=[0, 0.1])
         st.plotly_chart(fig_risk, use_container_width=True)
+
+        with st.expander("📊 Interprétation du graphique"):
+            st.markdown("""
+            Malgré des piques de risque en 2003, 2006, 2010 et 2015, le score moyen reste relativement stable autour de 0.015 - 0.020
+            """)
 
 def show_tab3(df):
     st.markdown("## Corrélations entre Zones, Types et Risques")
@@ -202,6 +229,11 @@ def show_tab3(df):
     )
     fig3.update_layout(margin=dict(t=40, l=0, r=0, b=0))
     st.plotly_chart(apply_responsive(fig3), use_container_width=True)
+
+    with st.expander("📊 Interprétation des graphiques"):
+        st.markdown("""
+        La majorité des accidents sont des **erreurs de navigation ou de manoeuvre**, survenant principalement dans le **Nord-Est** et le **Sud** / **Sud-Ouest** de la mer Baltique. La gravité des incidents est généralement **Critique** dans ces zones.
+        """)
 
     st.markdown("---")
 
@@ -323,7 +355,7 @@ def show():
     - Score de risque moyen : **{df['Risk_Score'].mean():.3f}** (min: {df['Risk_Score'].min():.3f}, max: {df['Risk_Score'].max():.3f}).
     - Pollution totale estimée : **{pollution_display}**.
     - Plage d'analyse : **{year_min} → {year_max}**, couvrant {distinct_years} années.
-    - Incidents critiques (classe "Critical") : **{(df['Risk_Class'] == 'Critical').mean()*100:.1f}%** du total.
+    - Incidents critiques (classe "Critique") : **{(df['Risk_Class'] == 'Critique').mean()*100:.1f}%** du total.
     """)
 
 show()
