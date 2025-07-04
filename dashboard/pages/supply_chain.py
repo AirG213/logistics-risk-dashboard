@@ -330,7 +330,7 @@ def show():
     col4.metric("Risk Score (moy)", f"{df['Risk_Score'].mean():.3f}")
     col5.metric("Résilience (moy)", f"{df['Resilience_Index'].mean():.3f}")
 
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Matrice de Corrélation"])
 
     with tab1:
         show_tab1(df)

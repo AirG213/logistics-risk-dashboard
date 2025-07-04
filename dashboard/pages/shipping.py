@@ -334,7 +334,7 @@ def show():
     col1.metric("Zone géographique la plus touchée", most_common_zone)
     col2.metric("Pollution totale (tonnes)", pollution_display)
 
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Matrice de Corrélation"])
 
     with tab1:
         show_tab1(df)

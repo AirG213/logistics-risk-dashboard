@@ -89,7 +89,7 @@ def show():
     col5.metric('Plage Temporelle', f'{df['Start_Time'].min().year} - {df['Start_Time'].max().year}')
 
     # TABS pour structurer la page
-    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Heatmap'])
+    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Matrice de Corrélation'])
 
     with tab1:
         st.subheader('Répartition des Catégories de Risque')

@@ -399,7 +399,7 @@ def show():
     col2.metric("Dommage Moyen", f"${avg_damage:,.0f}")
     col3.metric("Plage Temporelle", f"{df["Report Year"].min().astype(int)} - {df["Report Year"].max().astype(int)}")
 
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyses Temporelle", "Matrice de Corrélation"])
 
     with tab1:
         show_tab1(df)

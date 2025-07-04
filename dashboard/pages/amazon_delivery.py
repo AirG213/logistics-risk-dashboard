@@ -339,7 +339,7 @@ def show():
     col4.metric("Résilience Moyenne", f"{df['weather_traffic_resilience_score'].mean():.2f}")
     col5.metric('Plage Temporelle', f'{df['Order_Date'].min().year} - {df['Order_Date'].max().year}')
 
-    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyse Temporelle", "Heatmap"])
+    tab1, tab2, tab3 = st.tabs(["Vue Globale", "Analyse Temporelle", "Matrice de Corrélation"])
 
     with tab1:
         show_tab1(df)

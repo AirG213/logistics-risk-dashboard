@@ -352,7 +352,7 @@ def show():
     col2.metric('Nombre de Vols Dérouté', f'{int(df['arr_diverted'].sum()):,}')
     col3.metric('Plage Temporelle', f'{df['year'].min().astype(int)} - {df['year'].max().astype(int)}')
 
-    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Heatmap'])
+    tab1, tab2, tab3 = st.tabs(['Vue Globale', 'Analyses Temporelle', 'Matrice de Corrélation'])
     with tab1:
         show_tab1(df)
 
