@@ -10,7 +10,6 @@ show_sidebar()
 def show_tab1(df):
     st.markdown("### Carte des Fournisseurs les Plus Fiables")
 
-    # Moyenne du Resilience_Index par pays
     df_resilience = df.groupby("supplier_country", as_index=False)["Resilience_Index"].mean()
 
     fig_map = px.choropleth(
@@ -18,14 +17,17 @@ def show_tab1(df):
         locations="supplier_country",
         locationmode="country names",
         color="Resilience_Index",
-        color_continuous_scale="Greens"
+        color_continuous_scale="Greens",
+        labels={"supplier_country": "Pays", "Resilience_Index": "Indice de Résilience"}
     )
     fig_map.update_geos(showcountries=True, showcoastlines=True, fitbounds="locations")
     st.plotly_chart(apply_responsive(fig_map), use_container_width=True)
 
+    with st.expander("🧠 Comment lire cette carte ?"):
+        st.write("Chaque pays est coloré selon la **moyenne de l’indice de résilience** de ses fournisseurs. Plus la couleur est verte foncée, plus les fournisseurs sont fiables.")
+
     st.markdown("---")
 
-    # TOP pays
     st.markdown("### Top 10 des Pays avec les Fournisseurs les Plus Fiables")
     top_countries_best = (
         df.groupby('supplier_country', as_index=False)['Resilience_Index']
@@ -33,7 +35,11 @@ def show_tab1(df):
         .sort_values(by='Resilience_Index', ascending=False)
         .head(10)
     )
-    st.dataframe(top_countries_best, use_container_width=True, hide_index=True)
+    st.dataframe(top_countries_best.rename(columns={"supplier_country": "Pays", "Resilience_Index": "Indice de Résilience"}),
+                 use_container_width=True, hide_index=True)
+
+    with st.expander("📊 Interprétation du tableau"):
+        st.write("Ce tableau présente les **10 pays dont les fournisseurs ont les scores de résilience les plus élevés**, reflétant leur fiabilité.")
 
     st.markdown("---")
 
@@ -44,71 +50,106 @@ def show_tab1(df):
         .sort_values(by='Resilience_Index', ascending=True)
         .head(10)
     )
-    st.dataframe(top_countries_worst, use_container_width=True, hide_index=True)
+    st.dataframe(top_countries_worst.rename(columns={"supplier_country": "Pays", "Resilience_Index": "Indice de Résilience"}),
+                 use_container_width=True, hide_index=True)
+
+    with st.expander("📊 Interprétation du tableau"):
+        st.write("Ce tableau affiche les **10 pays dont les fournisseurs sont les moins fiables**, avec les indices de résilience les plus bas.")
 
     st.markdown("---")
 
-    # Distributions
     st.markdown("### Distribution des Scores")
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Risk Score")
         fig_risk = px.histogram(df, x="Risk_Score", nbins=50, color_discrete_sequence=["#e74c3c"])
+        fig_risk.update_yaxes(title_text="Nombre de fournisseurs")
         st.plotly_chart(apply_responsive(fig_risk), use_container_width=True)
+        with st.expander("📈 Interprétation du Risk Score"):
+            st.write("Cette distribution permet de voir comment le **score de risque** est réparti parmi tous les fournisseurs.")
 
     with col2:
         st.subheader("Indice de Résilience")
         fig_resilience = px.histogram(df, x="Resilience_Index", nbins=50, color_discrete_sequence=["#27ae60"])
+        fig_resilience.update_yaxes(title_text="Nombre de fournisseurs")
         st.plotly_chart(apply_responsive(fig_resilience), use_container_width=True)
+        with st.expander("📈 Interprétation de l’Indice de Résilience"):
+            st.write("Cette distribution illustre la répartition de l’**indice de résilience** parmi les fournisseurs.")
+
 
 def show_tab2(df):
     # --- Analyse des Délais ---
     st.markdown("### Analyse des Délais de Livraison")
 
-    fig_lead_hist = px.histogram(df, x="lead_time_days", nbins=50, color_discrete_sequence=["#1f77b4"])
+    fig_lead_hist = px.histogram(
+        df,
+        x="lead_time_days",
+        nbins=50,
+        color_discrete_sequence=["#1f77b4"],
+        labels={"lead_time_days": "Délai de livraison (jours)", "count": "Nombre d’observations"}
+    )
+    fig_lead_hist.update_layout(
+        yaxis_title="Nombre d’observations"
+    )    
     st.plotly_chart(apply_responsive(fig_lead_hist), use_container_width=True)
+    with st.expander("📊 Interprétation du graphique"):
+        st.write("Cette distribution permet d’observer les délais moyens de livraison. Une concentration vers la gauche indique des livraisons rapides.")
 
+    # Top 10 délais les plus longs
+    st.markdown("---")
+    st.markdown("### Top 10 des Pays avec les Délais Moyens les Plus Longs")
     top_lead_time_long = (
         df.groupby("supplier_country", as_index=False)["lead_time_days"]
         .mean()
         .sort_values(by="lead_time_days", ascending=False)
         .head(10)
     )
+    st.dataframe(top_lead_time_long.rename(columns={"supplier_country": "Pays", "lead_time_days": "Délai Moyen (jours)"}),
+                 use_container_width=True, hide_index=True)
+    with st.expander("📄 Interprétation du tableau"):
+        st.write("Ce tableau montre les pays avec les délais moyens de livraison les plus longs. Cela peut refléter des problèmes logistiques ou des distances importantes.")
 
+    # Top 10 délais les plus courts
     st.markdown("---")
-    st.markdown("Top 10 des Pays avec les Délais Moyens les Plus Longs")
-    st.dataframe(top_lead_time_long, use_container_width=True, hide_index=True)
-
+    st.markdown("### Top 10 des Pays avec les Meilleurs Délais Moyens")
     top_lead_time_short = (
         df.groupby("supplier_country", as_index=False)["lead_time_days"]
         .mean()
         .sort_values(by="lead_time_days", ascending=True)
         .head(10)
     )
-
-    st.markdown("---")
-    st.markdown("Top 10 des Pays avec les Meilleurs Délais Moyens")
-    st.dataframe(top_lead_time_short, use_container_width=True, hide_index=True)
-
-    st.markdown("---")
+    st.dataframe(top_lead_time_short.rename(columns={"supplier_country": "Pays", "lead_time_days": "Délai Moyen (jours)"}),
+                 use_container_width=True, hide_index=True)
+    with st.expander("📄 Interprétation du tableau"):
+        st.write("Ce tableau présente les pays les plus efficaces en termes de délais moyens de livraison.")
 
     # --- Analyse des Retards ---
-    st.markdown("### Analyse des Retards de Livraison (Delivery Time Deviation)")
+    st.markdown("---")
+    st.markdown("### Analyse des Retards de Livraison (Écart au Temps Prévu)")
 
-    fig_delay_hist = px.histogram(df, x="delivery_time_deviation", nbins=50, color_discrete_sequence=["#ff7f0e"])
+    fig_delay_hist = px.histogram(
+        df,
+        x="delivery_time_deviation",
+        nbins=50,
+        color_discrete_sequence=["#ff7f0e"],
+        labels={"delivery_time_deviation": "Écart de livraison (jours)", "count": "Nombre d’observations"}
+    )
+    fig_delay_hist.update_layout(
+        yaxis_title="Nombre d’observations"
+    )    
     st.plotly_chart(apply_responsive(fig_delay_hist), use_container_width=True)
+    with st.expander("📊 Interprétation du graphique"):
+        st.write("Ce graphique montre l’écart entre la date de livraison prévue et la date réelle. Les valeurs positives indiquent un retard, les négatives une avance.")
 
-    # KPIs retards / avances
     n_total = len(df)
     n_retard = (df['delivery_time_deviation'] > 0).sum()
     n_avance = (df['delivery_time_deviation'] < 0).sum()
     st.markdown(f"**Proportion de retards :** {n_retard / n_total * 100:.2f}%")
     st.markdown(f"**Proportion d'avances :** {n_avance / n_total * 100:.2f}%")
 
+    # --- Distribution des retards par pays
     st.markdown("---")
-
-    # Boxplot des retards pour les pays les plus représentés
     st.markdown("### Distribution des Retards de Livraison par Pays (Top 10)")
     top_countries = df['supplier_country'].value_counts().head(10).index.tolist()
     df_top_countries = df[df['supplier_country'].isin(top_countries)]
@@ -118,13 +159,15 @@ def show_tab2(df):
         x="supplier_country",
         y="delivery_time_deviation",
         color="supplier_country",
-        category_orders={"supplier_country": top_countries}
+        category_orders={"supplier_country": top_countries},
+        labels={"supplier_country": "Pays", "delivery_time_deviation": "Écart de livraison (jours)"}
     )
     st.plotly_chart(apply_responsive(fig_box), use_container_width=True)
+    with st.expander("📦 Interprétation du graphique"):
+        st.write("Ce boxplot montre la variabilité des retards par pays. Il permet de repérer les zones où la fiabilité logistique est plus faible.")
 
+    # --- Résilience des fournisseurs
     st.markdown("---")
-
-    # --- Fournisseurs les Plus et Moins Résilients ---
     st.markdown("### Top 10 des Fournisseurs les Plus Résilients")
     top_suppliers_best = (
         df.groupby(['supplier_id', 'supplier_country'], as_index=False)['Resilience_Index']
@@ -132,10 +175,11 @@ def show_tab2(df):
         .sort_values(by='Resilience_Index', ascending=False)
         .head(10)
     )
-    st.dataframe(top_suppliers_best, use_container_width=True, hide_index=True)
+    st.dataframe(top_suppliers_best.rename(columns={"supplier_country": "Pays"}), use_container_width=True, hide_index=True)
+    with st.expander("📄 Interprétation du tableau"):
+        st.write("Ces fournisseurs ont les meilleurs indices de résilience, ce qui traduit une bonne capacité à maintenir leur performance malgré les perturbations.")
 
     st.markdown("---")
-
     st.markdown("### Top 10 des Fournisseurs les Moins Résilients")
     top_suppliers_worst = (
         df.groupby(['supplier_id', 'supplier_country'], as_index=False)['Resilience_Index']
@@ -143,10 +187,13 @@ def show_tab2(df):
         .sort_values(by='Resilience_Index', ascending=True)
         .head(10)
     )
-    st.dataframe(top_suppliers_worst, use_container_width=True, hide_index=True)
+    st.dataframe(top_suppliers_worst.rename(columns={"supplier_country": "Pays"}), use_container_width=True, hide_index=True)
+    with st.expander("📄 Interprétation du tableau"):
+        st.write("Ces fournisseurs présentent les pires indices de résilience, suggérant qu’ils sont plus sensibles aux perturbations.")
 
-    # --- Analyse par Catégorie de Risque ---
+    # --- Catégories de risque
     if 'risk_classification' in df.columns:
+        st.markdown("---")
         st.markdown("### Analyse par Catégorie de Risque")
         risk_summary = (
             df.groupby('risk_classification')
@@ -155,40 +202,59 @@ def show_tab2(df):
                 'lead_time_days': 'mean',
                 'product_id': 'count'
             })
-            .rename(columns={'product_id': 'Nombre de Produits'})
+            .rename(columns={
+                'Risk_Score': 'Score de Risque Moyen',
+                'lead_time_days': 'Délai Moyen (jours)',
+                'product_id': 'Nombre de Produits'
+            })
             .reset_index()
         )
         st.dataframe(risk_summary, use_container_width=True, hide_index=True)
+        with st.expander("📄 Interprétation du tableau"):
+            st.write("Cette analyse par catégorie de risque permet de comparer les zones critiques en termes de délais et de volume de produits.")
+
 
 def show_tab3(df):
     st.markdown("### Matrice de Corrélation")
 
-    # Colonnes pertinentes à corréler
+    # Colonnes quantitatives pertinentes
     corr_cols = [
-        'Risk_Score',
-        'Resilience_Index',
-        'lead_time_days',
-        'delay_probability',
+        'route_risk_level',
         'disruption_likelihood_score',
+        'delay_probability',
+        'delivery_time_deviation',
+        'lead_time_days',
         'supplier_reliability_score',
-        'delivery_time_deviation'
+        'Risk_Score',
+        'Resilience_Index'
     ]
 
-    # Calcul de la matrice
+    # Mapping pour les labels en français
+    label_map = {
+        'route_risk_level': "Niveau de risque de la route",
+        'disruption_likelihood_score': "Probabilité de perturbation",
+        'delay_probability': "Probabilité de retard",
+        'delivery_time_deviation': "Écart au temps prévu",
+        'lead_time_days': "Délais de livraison (jours)",
+        'supplier_reliability_score': "Fiabilité du fournisseur",
+        'Risk_Score': "Score de Risque",
+        'Resilience_Index': "Indice de Résilience"
+    }
+
+    # Matrice de corrélation
     corr_matrix = df[corr_cols].corr().round(2)
 
-    # Plotly Heatmap stylée
     fig = go.Figure(
         data=go.Heatmap(
             z=corr_matrix.values,
-            x=corr_matrix.columns,
-            y=corr_matrix.columns,
+            x=[label_map.get(c, c) for c in corr_matrix.columns],
+            y=[label_map.get(c, c) for c in corr_matrix.index],
             colorscale='YlGnBu',
             zmin=-1,
             zmax=1,
             text=corr_matrix.values,
             texttemplate="%{text}",
-            hovertemplate="Corr(%{x}, %{y}) = %{z}<extra></extra>",
+            hovertemplate="Corrélation entre %{x} et %{y} = %{z}<extra></extra>",
             colorbar=dict(title="Corrélation")
         )
     )
@@ -200,6 +266,17 @@ def show_tab3(df):
     )
 
     st.plotly_chart(apply_responsive(fig), use_container_width=True)
+
+    with st.expander("📊 Interprétation de la matrice de corrélation"):
+        st.markdown("""
+        Cette matrice permet d’identifier les **relations linéaires** entre les différentes variables quantitatives :
+        - Une valeur proche de **+1** indique une forte corrélation positive.
+        - Une valeur proche de **-1** indique une forte corrélation négative.
+        - Une valeur proche de **0** indique une absence de corrélation linéaire.
+
+        Cela permet de repérer les facteurs qui influencent le **risque** ou la **résilience** des fournisseurs.
+        """)
+
 
 def show():
     # Charger l'icône et encoder en base64
