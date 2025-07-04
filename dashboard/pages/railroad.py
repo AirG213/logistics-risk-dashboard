@@ -9,37 +9,49 @@ from sidebar import show_sidebar
 show_sidebar()
 
 def show_tab1(df):
-
+    # Bloc 1 — Répartition par Type d'Accident
     st.subheader("Répartition par Type d'Accident")
     type_counts = df["Accident Type"].value_counts().reset_index()
-    type_counts.columns = ["Accident Type", "Count"]
+    type_counts.columns = ["Type d'Accident", "Nombre d'incidents"]
     fig_type = px.bar(
         type_counts,
-        x="Accident Type",
-        y="Count",
-        color="Accident Type",
+        x="Type d'Accident",
+        y="Nombre d'incidents",
+        color="Type d'Accident",
         title="Nombre d'incidents par type",
-        color_discrete_sequence=px.colors.qualitative.Set3
+        color_discrete_sequence=px.colors.qualitative.Set3,
+        labels={"Type d'Accident": "Type d'accident", "Nombre d'incidents": "Nombre d'incidents"}
     )
     st.plotly_chart(apply_responsive(fig_type), use_container_width=True)
-
+    with st.expander("ℹ️ Comment lire ce graphique ?"):
+        st.markdown("""
+        Ce graphique montre combien d'incidents ont été enregistrés pour chaque **type d'accident ferroviaire**.  
+        Il permet d'identifier les types les plus fréquents (ex. : **Déraillement**, **Collision**, etc.).
+        """)
     st.markdown("---")
 
-    st.markdown("### Moyennes des Variables par Type d'Accident")
+    # Bloc 2 — Moyennes des Variables par Type d'Accident
+    st.markdown("### Moyennes des Indicateurs par Type d'Accident")
     st.markdown("**Comparaison des indicateurs selon le type d'accident**")
-    variables = [
-        "Total Damage Cost", "Total Persons Killed", "Total Persons Injured",
-        "Hazmat Cars", "Hazmat Cars Damaged", "Persons Evacuated"
-    ]
+    variable_map = {
+        "Total Damage Cost": "Coût Total des Dégâts",
+        "Total Persons Killed": "Nombre de Morts",
+        "Total Persons Injured": "Nombre de Blessés",
+        "Hazmat Cars": "Wagons de matières dangereuses",
+        "Hazmat Cars Damaged": "Wagons dangereux endommagés",
+        "Persons Evacuated": "Personnes Évacuées"
+    }
+    variables = list(variable_map.keys())
     selected_vars = st.multiselect(
         "Variables à afficher :",
         options=variables,
+        format_func=lambda x: variable_map.get(x, x),
         default=["Total Damage Cost"]
     )
     if selected_vars:
         df_avg = df.groupby("Accident Type")[selected_vars].mean().reset_index()
         for var in selected_vars:
-            st.markdown(f"#### {var}")
+            st.markdown(f"#### {variable_map[var]}")
             sorted_df = df_avg.sort_values(var, ascending=False)
             fig = px.bar(
                 sorted_df,
@@ -47,37 +59,52 @@ def show_tab1(df):
                 y="Accident Type",
                 orientation="h",
                 height=400,
-                color_discrete_sequence=["#2ecc71"]
+                color_discrete_sequence=["#2ecc71"],
+                labels={
+                    var: variable_map[var],
+                    "Accident Type": "Type d'accident"
+                }
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(apply_responsive(fig), use_container_width=True)
+
+            with st.expander("ℹ️ Interprétation du graphique"):
+                st.markdown(f"""
+                Ce graphique montre la **moyenne de {variable_map[var]}** par type d'accident.  
+                Il permet d'évaluer **l'impact moyen** de chaque type d'incident sur cette variable.
+                """)
     else:
         st.info("Veuillez sélectionner au moins une variable.")
 
     st.markdown("---")
 
+    # Bloc 3 — Niveau de Criticité Global
     st.subheader("Niveau de Criticité Global")
     crit_counts = df["Niveau_criticité"].value_counts().reset_index()
-    crit_counts.columns = ["Niveau_criticité", "Count"]
+    crit_counts.columns = ["Niveau de Criticité", "Nombre"]
     fig_crit = px.pie(
         crit_counts,
-        names="Niveau_criticité",
-        values="Count",
+        names="Niveau de Criticité",
+        values="Nombre",
         title="Répartition du niveau de criticité",
-        color="Niveau_criticité",
+        color="Niveau de Criticité",
         color_discrete_map={"Low": "green", "Medium": "orange", "High": "red"}
     )
     st.plotly_chart(apply_responsive(fig_crit), use_container_width=True)
+    with st.expander("ℹ️ Que montre ce graphique ?"):
+        st.markdown("""
+        Cette répartition montre la **proportion d'incidents classés selon leur niveau de criticité**  
+        (basé sur leur gravité, impact, dangerosité...).
+        """)
 
     st.markdown("---")
 
-    st.subheader("Carte des Incidents")
-    # Nettoyage des coordonnées
+    # Bloc 4 — Carte des Incidents
+    st.subheader("Carte des Incidents Ferroviaires")
     df_map = df.dropna(subset=["Latitude", "Longitude"])
     df_map = df_map[
         (df_map["Latitude"].between(24.5, 49.5)) &
         (df_map["Longitude"].between(-125, -66))
     ]
-
     fig_map = px.scatter_map(
         df_map,
         lat="Latitude",
@@ -91,37 +118,52 @@ def show_tab1(df):
             "Medium": "#f1c40f",
             "High": "#e74c3c"
         },
-        hover_data=["State Name", "County Name", "Accident Type", "Total Damage Cost", "Total Persons Killed"],
+        hover_data={
+            "State Name": True,
+            "County Name": True,
+            "Accident Type": True,
+            "Total Damage Cost": True,
+            "Total Persons Killed": True
+        },
+        labels={
+            "State Name": "État",
+            "County Name": "Comté",
+            "Accident Type": "Type d'Accident",
+            "Total Damage Cost": "Coût des Dégâts",
+            "Total Persons Killed": "Personnes Décédées"
+        }
     )
-
     fig_map.update_layout(
         margin={"r":0, "t":0, "l":0, "b":0},
         mapbox_center={"lat": 37.5, "lon": -95},
         mapbox_zoom=3.2
     )
-
     st.plotly_chart(apply_responsive(fig_map), use_container_width=True)
 
     st.markdown("---")
 
-    st.subheader("Comtés les plus et les moins touchés")
+    # Bloc 5 — Comtés les plus et les moins touchés
+    st.subheader("Comtés les Plus et Moins Touchés")
     county_counts = df["County Name"].value_counts().reset_index()
-    county_counts.columns = ["County", "Count"]
+    county_counts.columns = ["Comté", "Nombre d'incidents"]
     col1, col2 = st.columns(2)
-
     with col1:
-        st.markdown("**Top 10 — Comtés les plus touchés**")
+        st.markdown("**Top 10 — Comtés les Plus Touchés**")
         st.dataframe(county_counts.head(10), use_container_width=True)
-
     with col2:
-        st.markdown("**Top 10 — Comtés les moins touchés (≥1 incident)**")
-        st.dataframe(county_counts[county_counts["Count"] > 0].tail(10), use_container_width=True)
+        st.markdown("**Top 10 — Comtés les Moins Touchés (≥1 incident)**")
+        st.dataframe(county_counts[county_counts["Nombre d'incidents"] > 0].tail(10), use_container_width=True)
+    with st.expander("📍 Que montre ce classement ?"):
+        st.markdown("""
+        Ces tableaux listent les **comtés les plus exposés aux incidents ferroviaires** (en nombre brut).  
+        Cela permet d’identifier les **zones géographiques sensibles**.
+        """)
 
 
 def show_tab2(df):
-    st.subheader("Évolution des Incidents Ferroviaires sur les 20 dernières années")
+    st.subheader("Évolution des Incidents Ferroviaires sur les 20 Dernières Années")
 
-    # Par année
+    # Bloc 1 — Incidents par Année
     incidents_by_year = df["Report Year"].value_counts().sort_index()
     fig_years = px.bar(
         x=incidents_by_year.index,
@@ -131,74 +173,157 @@ def show_tab2(df):
     )
     st.plotly_chart(fig_years, use_container_width=True)
 
+    with st.expander("📊 Que montre ce graphique ?"):
+        st.markdown("""
+        Ce graphique présente le **nombre total d'incidents enregistrés chaque année**.  
+        Il permet d’identifier les années avec une augmentation ou diminution des accidents ferroviaires.
+        """)
+
     st.markdown("---")
 
-    # Répartition par type d'incident sur le temps
+    # Bloc 2 — Types d'Accidents au Fil du Temps
     st.subheader("Types d'Accidents au Fil du Temps")
     type_year = df.groupby(["Report Year", "Accident Type"]).size().unstack(fill_value=0)
     fig_type = px.area(
         type_year,
-        labels={"value": "Nombre", "Report Year": "Année", "variable": "Type"},
+        labels={"value": "Nombre d'incidents", "Report Year": "Année", "variable": "Type d'accident"},
         title="Évolution des types d'accidents"
     )
     st.plotly_chart(fig_type, use_container_width=True)
 
+    with st.expander("📈 Interprétation de l'évolution des types d'accidents"):
+        st.markdown("""
+        Ce graphique **empilé** permet de visualiser comment la **répartition des types d'accidents**  
+        a évolué au fil des années.  
+        Il met en évidence les types dominants à chaque époque.
+        """)
+
     st.markdown("---")
 
-    # Risque moyen par année
+    # Bloc 3 — Risque Composite Moyen par Année
     st.subheader("Évolution du Risque Composite Moyen")
     risk_by_year = df.groupby("Report Year")["Risque_composite"].mean()
     fig_risk = px.line(
         x=risk_by_year.index,
         y=risk_by_year.values,
         markers=True,
-        labels={"x": "Année", "y": "Risque moyen"},
+        labels={"x": "Année", "y": "Risque Composite Moyen"},
         title="Risque moyen par année"
     )
     st.plotly_chart(fig_risk, use_container_width=True)
 
+    with st.expander("📉 Que représente ce risque composite ?"):
+        st.markdown("""
+        Ce graphique montre la **moyenne annuelle du score de risque composite**,  
+        qui agrège plusieurs indicateurs de dangerosité (coût, gravité, victimes…).  
+        Une tendance haussière peut indiquer des incidents plus graves.
+        """)
+
     st.markdown("---")
 
-    # Moment de la journée
-    st.subheader("Répartition par Moment de la Journée")
+    # Bloc 4 — Moment de la Journée
+    st.subheader("Répartition des Incidents par Moment de la Journée")
+
+    ordre_fr = ["Tôt le matin", "Fin de matinée", "Après-midi", "Soirée"]
+
     fig_time = px.histogram(
         df,
         x="TimeOfDay",
         color="Niveau_criticité",
         barmode="group",
-        category_orders={"TimeOfDay": ["EARLY MORNING", "LATE MORNING", "AFTERNOON", "EVENING", "DARK", "DAWN"]},
-        labels={"count": "Nombre d'incidents"},
+        category_orders={"TimeOfDay": ordre_fr},
+        color_discrete_map={
+            "Low": "#2ecc71",
+            "Medium": "#f39c12",
+            "High": "#e74c3c"
+        },
+        labels={
+            "TimeOfDay": "Moment de la Journée",
+            "count": "Nombre d'incidents",
+            "Niveau_criticité": "Criticité"
+        },
         title="Incidents par moment de la journée"
     )
-    st.plotly_chart(fig_time, use_container_width=True)
+    st.plotly_chart(apply_responsive(fig_time), use_container_width=True)
+
+    with st.expander("🕓 Explication des moments de la journée"):
+        st.markdown("""
+        Ce graphique montre comment se répartissent les incidents ferroviaires selon le **moment de la journée** :  
+        - **Tôt le matin**  
+        - **Fin de matinée**  
+        - **Après-midi**  
+        - **Soirée**  
+
+        Les couleurs indiquent le **niveau de criticité** de chaque incident.
+        """)
 
 
 def show_tab3(df):
     st.subheader("Analyse de Corrélation — Variables d'Impact")
-
     general_cols = [
         "Total Damage Cost", "Total Persons Killed", "Total Persons Injured",
         "Hazmat Cars", "Hazmat Cars Damaged", "Persons Evacuated", "Risque_composite"
     ]
-
+    # Mapping des labels pour affichage FR
+    label_map = {
+        "Total Damage Cost": "Coût Matériel Total",
+        "Total Persons Killed": "Nombre de Morts",
+        "Total Persons Injured": "Nombre de Blessés",
+        "Hazmat Cars": "Wagons de Matières Dangereuses",
+        "Hazmat Cars Damaged": "Wagons de Matières Dangereuses Endommagés",
+        "Persons Evacuated": "Personnes Évacuées",
+        "Risque_composite": "Risque Composite"
+    }
+    # Corrélation générale
     st.markdown("### Corrélation Générale")
-    st.markdown("**Corrélation entre les variables générales**")
     corr_general = df[general_cols].corr()
-    fig1 = px.imshow(corr_general, text_auto=True, color_continuous_scale="RdBu_r", aspect="auto")
+    corr_general.index = corr_general.index.to_series().replace(label_map)
+    corr_general.columns = corr_general.columns.to_series().replace(label_map)
+    fig1 = px.imshow(
+        corr_general,
+        text_auto=True,
+        color_continuous_scale="RdBu_r",
+        aspect="auto",
+        labels=dict(color="Corrélation")
+    )
     fig1.update_layout(width=900, height=600, margin=dict(l=50, r=50, t=50, b=50))
     st.plotly_chart(fig1, use_container_width=True)
-    st.caption("Les variables fortement corrélées sont les blessures, les décès et les coûts matériels. Hazmat reste faiblement lié.")
+    with st.expander("📘 Comment lire cette matrice ?"):
+        st.markdown("""
+        Cette matrice montre la **corrélation linéaire** entre les variables générales.  
+        - Une valeur proche de **1** (rouge foncé) indique une **forte corrélation positive** (les deux variables augmentent ensemble).  
+        - Une valeur proche de **-1** (bleu foncé) indique une **forte corrélation négative** (l'une augmente quand l'autre diminue).  
+        - Une valeur proche de **0** signifie **aucune corrélation linéaire**.
+        """)
 
     st.markdown("---")
 
-    st.markdown("### Corrélation Hazmat & Risque")
-    st.markdown("**Corrélation Hazmat et Risque Composite**")
-    hazmat_cols = ["Hazmat Cars", "Hazmat Cars Damaged", "Persons Evacuated", "Risque_composite"]
+    # Corrélation Hazmat
+    st.markdown("### Corrélation Matières Dangereuses & Risque")
+    hazmat_cols = [
+        "Hazmat Cars", "Hazmat Cars Damaged", "Persons Evacuated", "Risque_composite"
+    ]
     corr_hazmat = df[hazmat_cols].corr()
-    fig2 = px.imshow(corr_hazmat, text_auto=True, color_continuous_scale="YlGnBu", aspect="auto")
+    corr_hazmat.index = corr_hazmat.index.to_series().replace(label_map)
+    corr_hazmat.columns = corr_hazmat.columns.to_series().replace(label_map)
+    fig2 = px.imshow(
+        corr_hazmat,
+        text_auto=True,
+        color_continuous_scale="YlGnBu",
+        aspect="auto",
+        labels=dict(color="Corrélation")
+    )
     fig2.update_layout(width=800, height=500, margin=dict(l=50, r=50, t=50, b=50))
     st.plotly_chart(fig2, use_container_width=True)
-    st.caption("Corrélation modérée entre wagons Hazmat endommagés et nombre total. Risque composite peu influencé ici.")
+    with st.expander("📘 Comment lire cette matrice ?"):
+        st.markdown("""
+        Cette matrice explore les **corrélations entre les variables liées aux matières dangereuses et le risque composite** :  
+        - **Wagons de Matières Dangereuses** : nombre total impliqué.  
+        - **Endommagés** : ceux ayant subi un dommage.  
+        - **Personnes Évacuées** : conséquence directe d’un danger.  
+        Regardez les zones foncées pour détecter les corrélations fortes entre ces variables.
+        """)
+
 
 def show():
     # Charger l'icône et encoder en base64
@@ -296,12 +421,12 @@ def show():
     - **Total de personnes blessées :** {total_injured:,}
     - **Coût total des dommages :** ${total_damage:,.0f}
     - **État le plus touché :** {top_state}
-    ↳ Dommages cumulés : ${df[df['State Name'] == top_state]['Total Damage Cost'].sum():,.0f}
+    -> Dommages cumulés : ${df[df['State Name'] == top_state]['Total Damage Cost'].sum():,.0f}
     - **Coût moyen par incident :** ${avg_damage:,.0f}
     - **Année la plus critique :** {df['Report Year'].mode()[0]}
-    ↳ Nombre d'incidents : {df['Report Year'].value_counts().max()}
+    -> Nombre d'incidents : {df['Report Year'].value_counts().max()}
     - **Risque composite moyen :** {df['Risque_composite'].mean():.2e}
-    ↳ (Score faible car basé sur 210M trajets)
+    -> (Score faible car basé sur 210M trajets)
     - **Niveau de criticité dominant :** {df['Niveau_criticité'].mode()[0]}
     """)
 
