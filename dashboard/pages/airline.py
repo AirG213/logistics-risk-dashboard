@@ -98,6 +98,17 @@ def show_tab1(df):
     else:
         st.warning("Les colonnes de temps de retard par cause sont manquantes.")
 
+    with st.expander("📊 Interprétation des graphiques"):
+        st.markdown("""
+        Les deux graphiques montrent que :
+
+        - **L'arrivée tardive d'un vol précédent** est la **principale source de retard**, en fréquence comme en durée (plus de 500 millions de minutes).
+        - Les **retards causés par les compagnies** et le **contrôle aérien (NAS)** sont également significatifs.
+        - En revanche, les **retards météo** restent limités, et les **retards liés à la sécurité** sont très marginaux.
+
+        -> Les données suggèrent que les **retards en cascade** (dus aux vols précédents) constituent un problème systémique majeur.
+        """)
+
     st.markdown("---")
 
     st.subheader("Top 10 des aéroports avec le plus fort taux de retard")
@@ -255,6 +266,11 @@ def show_tab2(df):
     else:
         st.warning("Colonnes 'arr_del15', 'arr_flights' ou 'year' manquantes.")
 
+    with st.expander("📊 Interprétation du graphique"):
+        st.markdown("""
+        Ce graphique indique que, d'une année à l'autre, le taux de retard demeure globalement **stable autour de 20%**, à l'exception de l'année 2020, marquée par une baisse liée au ralentissement du transport aérien durant la pandémie de COVID-19.
+        """)
+
 def show_tab3(df):
     st.subheader("Corrélation entre les durées de retard (en minutes)")
 
@@ -311,7 +327,7 @@ def show_tab3(df):
     else:
         st.warning("Colonnes de comptage de retard manquantes.")
 
-    with st.expander("💡 Interprétation de la corrélation entre les causes"):
+    with st.expander("📊 Interprétation de la corrélation entre les causes"):
         st.markdown(f"""
         - Une **forte corrélation positive** entre certaines causes indique qu'elles surviennent souvent ensemble.
         Exemple : les retards dus à **l'avion précédent** sont fortement liés aux **retards de la compagnie aérienne**, ce qui suggère des effets en chaîne internes.
